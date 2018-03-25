@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Scanner;
+
 public class Thing implements Comparable<Thing> {
 
 	private int index, parent;
@@ -9,6 +11,12 @@ public class Thing implements Comparable<Thing> {
 		this.name = name;
 		this.index = index;
 		this.parent = parent;
+	}
+	
+	public Thing(Scanner sc) {
+		if (sc.hasNext()) name = sc.next();
+		if (sc.hasNextInt()) index = sc.nextInt();
+		if (sc.hasNextInt()) parent = sc.nextInt();
 	}
 	
 	public int compareTo(Thing o) {

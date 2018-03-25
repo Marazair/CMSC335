@@ -1,27 +1,17 @@
 package main;
 
+import java.util.Scanner;
+
 public class Dock extends Thing {
 	private Ship ship;
 	
-	public Dock() {
-		ship = null;
+	public Dock(Scanner sc) {
+		super(sc);
 	}
 	
-	public Dock(Ship ship) {
+	public void addShip(Ship ship) {
 		this.ship = ship;
 	}
 	
-	public int dockShip(Ship newShip) {
-		if(ship == null) {
-			ship = newShip;
-			return 1;
-		}
-		else {
-			return -1;
-		}
-	}
 	
-	public void undockShip() {
-		ship = null;
-	}
 }

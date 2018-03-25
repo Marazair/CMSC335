@@ -1,14 +1,14 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class World extends Thing {
 	private ArrayList<SeaPort> ports;
 	private PortTime time;
 	
-	public World (ArrayList<SeaPort> ports, PortTime time) {
-		this.ports = ports;
-		this.time = time;
+	public World (Scanner sc) {
+		super(sc);
+		ports = new ArrayList<SeaPort>();
 	}
 	
 	public int getTime() {
