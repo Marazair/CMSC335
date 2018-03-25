@@ -3,60 +3,27 @@ package main;
 import java.util.*;
 
 public class CargoShip extends Ship {
-
-	private ArrayList<Cargo> cargoHold;
 	
-	public CargoShip(int index, int parent, String name, double draft, double length, double weight, 
-			double width, ArrayList<Cargo> cargoHold) {
+	private double cargoValue, cargoVolume, cargoWeight;
+
+	public CargoShip(int index, int parent, String name, double draft, double length, 
+			double weight, double width, double cargoValue, double cargoVolume, double cargoWeight) {
 		
 		super(index, parent, name, draft, length, weight, width);
-		this.cargoHold = cargoHold;
-		
+		this.cargoValue = cargoValue;
+		this.cargoVolume = cargoVolume;
+		this.cargoWeight = cargoWeight;
 	}
 	
-	
-	public void loadCargo(Cargo cargo) {
-		cargoHold.add(cargo);
+	public void loadCargo(double value, double volume, double weight) {
+		cargoValue += value;
+		cargoVolume += volume;
+		cargoWeight += weight;
 	}
 	
-	public Cargo unloadCargo(Cargo cargo) {
-		int location = cargoHold.indexOf(cargo);
-		
-		if(location != -1) {
-			cargoHold.remove(location);
-			return cargo;
-		}
-		else {
-			return null;
-		}
-	}
-	
-	public double cargoValue() {
-		double totalValue = 0;
-		for (int x = 0; x < cargoHold.size(); x++) {
-			totalValue += cargoHold.get(x).getValue();
-		}
-		
-		return totalValue;
-	}
-	
-	public double cargoWeight() {
-		double totalWeight = 0;
-		
-		for (int x = 0; x < cargoHold.size(); x++) {
-			totalWeight += cargoHold.get(x).getWeight();
-		}
-		
-		return totalWeight;
-	}
-	
-	public double cargoVolume() {
-		double totalVolume = 0;
-		
-		for (int x = 0; x < cargoHold.size(); x++) {
-			totalVolume += cargoHold.get(x).getVolume();
-		}
-		
-		return totalVolume;
+	public void unloadCargo(double value, double volume, double weight) {
+		cargoValue -= value;
+		cargoVolume -= volume;
+		cargoWeight -= weight;
 	}
 }
