@@ -3,11 +3,17 @@ package main;
 import java.util.*;
 
 public class CargoShip extends Ship {
+
 	private ArrayList<Cargo> cargoHold;
 	
-	CargoShip(ArrayList<Cargo> cargoHold) {
+	public CargoShip(int index, int parent, String name, double draft, double length, double weight, 
+			double width, ArrayList<Cargo> cargoHold) {
+		
+		super(index, parent, name, draft, length, weight, width);
 		this.cargoHold = cargoHold;
+		
 	}
+	
 	
 	public void loadCargo(Cargo cargo) {
 		cargoHold.add(cargo);
