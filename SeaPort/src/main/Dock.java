@@ -9,7 +9,7 @@ public class Dock extends Thing {
 		super(sc);
 	}
 	
-	public void addShip(Ship ship) {
+	public void dockShip(Ship ship) {
 		this.ship = ship;
 	}
 	

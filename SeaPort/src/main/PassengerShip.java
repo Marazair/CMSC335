@@ -6,15 +6,6 @@ public class PassengerShip extends Ship {
 	
 	private int numberOfOccupiedRooms, numberOfPassengers, numberOfRooms;
 	
-	public PassengerShip(int index, int parent, String name, double draft, double length, double weight, double width,
-			int numberOfPassengers, int numberOfRooms, int numberOfOccupiedRooms) {
-		
-		super(index, parent, name, draft, length, weight, width);
-		this.numberOfOccupiedRooms = numberOfOccupiedRooms;
-		this.numberOfPassengers = numberOfPassengers;
-		this.numberOfRooms = numberOfRooms;
-	}
-	
 	public PassengerShip(Scanner sc) {
 		super(sc);
 		if(sc.hasNextInt()) numberOfPassengers = sc.nextInt();
