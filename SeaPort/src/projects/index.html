@@ -1,0 +1,1518 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>CMSC 335 Projects V001</title>
+  </head>
+  <body>
+    <table border="1" cellpadding="10" cellspacing="2">
+      <tbody>
+        <tr>
+          <td valign="top">
+            <h1>Project Philosophy</h1>
+            <h2> SeaPorts Project</h2>
+            Date: July 10, 2016<br>
+            by Nicholas Duchon<br>
+            <ul>
+              <li><a
+                  href="http://sandsduchon.org/duchon/cs335/index.html">Additional
+
+
+                  resources</a><br>
+              </li>
+            </ul>
+          </td>
+          <td valign="top">Outline:<br>
+            <ul>
+              <li><a href="#Introduction">Introduction</a></li>
+              <li><a href="#General_Objectives">General Objectives</a></li>
+              <li><a href="#Documentation">Documentation</a><br>
+              </li>
+              <li><a href="#Project_1">Project 1</a></li>
+              <ul>
+                <li><a href="#Data_file_format:">Data File Format</a></li>
+                <li><a href="#Suggestions:">Suggestions</a><br>
+                </li>
+              </ul>
+              <li><a href="#Project_2">Project 2</a></li>
+              <li><a href="#Project_3">Project 3</a></li>
+              <li><a href="#Project_4">Project 4</a></li>
+              <li><a href="#Grading">Grading</a></li>
+              <ul>
+                <li><a href="#Coding_hints:">Hints</a><br>
+                </li>
+              </ul>
+              <li><a href="#Package">Files in package</a><br>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2><a name="Introduction"></a>Introduction - the SeaPort Project
+      series<br>
+    </h2>
+    <p>For this set of project, we wish to simulate some of the aspects
+      of a number of Sea Ports.<br>
+    </p>
+    <p>Here are the classes and their instance variables we wish to
+      define:<br>
+    </p>
+    <ul>
+      <li>SeaPortProgram extends JFrame<br>
+      </li>
+      <ul>
+        <li>variables used by the GUI interface</li>
+        <li>world: World<br>
+        </li>
+      </ul>
+      <li>Thing implement Comparable &lt;Thing&gt;<br>
+      </li>
+      <ul>
+        <li>index: int<br>
+        </li>
+        <li>name: String</li>
+        <li>parent: int<br>
+        </li>
+      </ul>
+      <li>World extends Thing</li>
+      <ul>
+        <li>ports: ArrayList &lt;SeaPort&gt; <br>
+        </li>
+        <li>time: PortTime</li>
+      </ul>
+      <li>SeaPort extends Thing</li>
+      <ul>
+        <li>docks: ArrayList &lt;Dock&gt;</li>
+        <li>que: ArrayList &lt;Ship&gt; // the list of ships waiting to
+          dock<br>
+        </li>
+        <li>ships: ArrayList &lt;Ship&gt; // a list of all the ships at
+          this port</li>
+        <li>persons: ArrayList &lt;Person&gt; // people with skills at
+          this port</li>
+      </ul>
+      <li>Dock extends Thing</li>
+      <ul>
+        <li>ship: Ship</li>
+      </ul>
+      <li>Ship extends Thing</li>
+      <ul>
+        <li>arrivalTime, dockTime: PortTime</li>
+        <li>draft, length, weight, width: double</li>
+        <li>jobs: ArrayList &lt;Job&gt;</li>
+      </ul>
+      <li>PassengerShip extends Ship</li>
+      <ul>
+        <li>numberOfOccupiedRooms: int</li>
+        <li>numberOfPassengers: int</li>
+        <li>numberOfRooms: int<br>
+        </li>
+      </ul>
+      <li>CargoShip extends Ship</li>
+      <ul>
+        <li>cargoValue: double<br>
+        </li>
+        <li>cargoVolume: double<br>
+        </li>
+        <li>cargoWeight: double</li>
+      </ul>
+      <li>Person extends Thing</li>
+      <ul>
+        <li>skill: String<br>
+        </li>
+      </ul>
+      <li>Job extends Thing - optional till Projects 3 and 4<br>
+      </li>
+      <ul>
+        <li>duration: double</li>
+        <li>requirements: ArrayList &lt;String&gt;<br>
+          // should be some of the skills of the persons<br>
+        </li>
+      </ul>
+      <li>PortTime</li>
+      <ul>
+        <li>time: int</li>
+      </ul>
+    </ul>
+    <p>Eventually, in Projects 3 and 4, you will be asked to show the
+      progress of the jobs using JProgressBar's.<br>
+    </p>
+    <p>Here's a very quick overview of the projects:<br>
+    </p>
+    <ol>
+      <li>Read a data file, create the internal data structure, create a
+        GUI to display the structure, and let the user search the
+        structure.</li>
+      <li>Sort the structure, use hash maps to create the structure more
+        efficiently.</li>
+      <li>Create a thread for each job, cannot run until ship has a
+        dock, create a GUI to show the progress of each job.</li>
+      <li>Simulate competing for resources (persons with particular
+        skills) for each job.<br>
+      </li>
+    </ol>
+    <h2><a name="General_Objectives"></a>General Objectives</h2>
+    <blockquote>
+      <p>Here are some notes about the projects, the particular features
+        of object-oriented design and object-oriented programming
+        (OOD/OOP) the we want to cover in this class and some of the
+        features of Java to help support that style of programming. We
+        also want to explore the Java GUI system a little, with
+        particular emphasis on viewing the data structures and effective
+        ways to display the running of multiple threads competing for
+        resources.<br>
+        <br>
+        The particular scenarios selected for each semester try ask you
+        to implement as many of these objectives as possible in some
+        compelling way. We are always open to additions and suggestions.<br>
+      </p>
+    </blockquote>
+    <h3> General objects for each project:</h3>
+    <ul>
+      <li> Project 1 - classes, text data file, GUI, searching</li>
+      <ul>
+        <li>Define and implement appropriate classes, including:</li>
+        <ul>
+          <li>instance and class variables, <br>
+          </li>
+          <li>constructors, <br>
+          </li>
+          <li>toString methods, and <br>
+          </li>
+          <li>other appropriate methods.</li>
+        </ul>
+        <li>Read data from a text file:</li>
+        <ul>
+          <li>specified at run time, <br>
+          </li>
+          <ul>
+            <li><font face="Courier New, Courier, monospace">JFileChooser
+
+
+
+                jfc = new JFileChooser ("."); </font><br>
+              // start at dot, the current directory<br>
+            </li>
+          </ul>
+          <li>using that data to create instances of the classes, <br>
+          </li>
+          <li>creating a multi-tree (class instances related in
+            hierarchical, has-some, relationships), and <br>
+          </li>
+          <li>organizing those instances in existing JDK structures
+            which can be sorted, such as ArrayList's.</li>
+        </ul>
+        <li>Create a simple GUI:</li>
+        <ul>
+          <li>presenting the data in the structures with with some
+            buttons and <br>
+          </li>
+          <li>text fields supporting SEARCHING on the various fields of
+            each class.</li>
+        </ul>
+      </ul>
+      <li>Project 2 - Map class, Comparator, sorting</li>
+      <ul>
+        <li>Use the JDK Map class to write more efficient code when
+          constructing the internal data structures from the data file.<br>
+        </li>
+        <li>Implement SORTING using the Comparator interface together
+          with the JDK support for sorting data structures, thus sorting
+          on different fields of the classes from Project 1.<br>
+        </li>
+        <li>Extend the GUI from Project 1 to let the user sort the data
+          at run-time.</li>
+      </ul>
+      <li>Project 3 - More JDK classes - GUI's and threads</li>
+      <ul>
+        <li>Explore other GUI classes, such as JTree, JTable, and
+          JProgressBar.</li>
+        <li>Create and run threads</li>
+        <ul>
+          <li>Competing for one resource.</li>
+        </ul>
+      </ul>
+      <li>Project 4 - Concurrency</li>
+      <ul>
+        <li>Resource pools</li>
+        <ul>
+          <li>Threads competing for multiple resources<br>
+          </li>
+        </ul>
+        <li>Blocking threads</li>
+        <li>Extending the GUI interface to visualize the resource pools
+          and progress of the various threads.</li>
+      </ul>
+    </ul>
+    <h2><a name="Documentation"></a>Documentation</h2>
+    <p>HINT: You should start working on a documentation file before you
+      do anything else with these projects, and fill in items as you go
+      along. Leaving the documentation until the project is finished is
+      not a good idea for any number of reasons.<br>
+    </p>
+    <p>The documentation should include the following (graded) elements:<br>
+    </p>
+    <ul>
+      <li>Cover page (including name, date, project, your class
+        information)</li>
+      <li>Design</li>
+      <ul>
+        <li>including a UML class diagram</li>
+        <li>classes, variables and methods: what they mean and why they
+          are there</li>
+        <li>tied to the requirements of the project<br>
+        </li>
+      </ul>
+      <li>User's Guide</li>
+      <ul>
+        <li>how would a user start and run your project</li>
+        <li>any special features</li>
+        <li>effective screen shots are welcome, but don't overdo this</li>
+      </ul>
+      <li>Test Plan</li>
+      <ul>
+        <li>do this BEFORE you code anything</li>
+        <li>what do you EXPECT the project to do</li>
+        <li>justification for various data files, for example<br>
+        </li>
+      </ul>
+      <li>Lessons Learned</li>
+      <ul>
+        <li>express yourself here</li>
+        <li>a way to keep good memories of successes after hard work<br>
+        </li>
+      </ul>
+    </ul>
+    <p>CAUTION: the file size should be reasonable, currently &lt; 5
+      MBytes, mostly &lt; 1 MB.<br>
+    </p>
+    <h2> </h2>
+    <h2><a name="Project_1"></a>Project 1 - Also see <a href="#Grading">Grading</a><br>
+    </h2>
+    <p>The goals are:<br>
+    </p>
+    <ol>
+      <li>Create a GUI</li>
+      <li>Let the user select a data file, using JFileChooser</li>
+      <li>Read the data file, creating the specified internal data
+        structure (see the <a href="#Introduction">Introduction</a> for
+        the classes and variables of the structure).</li>
+      <li>Display the internal data structure in a nice format in the
+        GUI</li>
+      <ol>
+        <li>use JScrollPane and JTextArea</li>
+      </ol>
+      <li>Display the results of a Search specified by the user</li>
+      <ol>
+        <li>JTextField to specify the search target</li>
+        <li>Searching targets: name, index, skill would be a minimum<br>
+          you are encouraged to provide other options</li>
+        <li>Note that a search may return more than one item</li>
+        <li>DO NOT create new data structures (beyond the specified
+          internal data structure) to search<br>
+          you may create a structure of found items as a return value</li>
+      </ol>
+    </ol>
+    <h3><a name="Data_file_format:"></a>Data file format:<br>
+    </h3>
+    <ul>
+      <li>Each item in the simulation will appear on a single line of
+        the data file.</li>
+      <li>The data file may have comment lines, which will start with a
+        //.</li>
+      <li>There may be blank lines in the data file, which your program
+        should accept and ignore.</li>
+      <li>The data lines will start with one of the following flag
+        values, indicating which item is being specified, its name, its
+        index, and the index of its parent - which is used to specify
+        the connections used to create the internal data structure (ie,
+        assign an item to it parent or parent ArrayList).</li>
+      <li>For most items there will be additional fields appropriate to
+        the class of that item.</li>
+      <li>The fields on a line are space delimited (perhaps more than
+        one space)</li>
+      <ul>
+        <li>This works well with Scanner methods, such as <font
+            face="Courier New, Courier, monospace">next(),</font> <font
+            face="Courier New, Courier, monospace">nextInt()</font> and
+          <font face="Courier New, Courier, monospace">nextDouble()</font>.<br>
+        </li>
+      </ul>
+    </ul>
+    <p>Here are the details of valid lines, with an example of each
+      line.<br>
+    </p>
+    <blockquote>
+      <p><font face="Courier New, Courier, monospace">//
+          port&nbsp;&nbsp; name index parent(null)<br>
+          //&nbsp;&nbsp;&nbsp; port&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt;<br>
+          port Kandahar 10002 0<br>
+        </font></p>
+      <p><font face="Courier New, Courier, monospace">//
+          dock&nbsp;&nbsp; name index parent(port)<br>
+          //&nbsp;&nbsp;&nbsp; dock&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt;<br>
+          &nbsp; dock Pier_5 20005 10001 30005<br>
+        </font></p>
+      <p><font face="Courier New, Courier, monospace">//
+          ship&nbsp;&nbsp; name index parent(dock/port) weight length
+          width draft<br>
+          //&nbsp;&nbsp;&nbsp; ship&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt; &lt;double&gt; &lt;double&gt;
+          &lt;double&gt; &lt;double&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          ship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Reason 40003 10000 165.91 447.15 85.83 27.07<br>
+        </font></p>
+      <p><font face="Courier New, Courier, monospace">// cship&nbsp;
+          name index parent(dock/port) weight length width draft
+          cargoWeight cargoVolume cargoValue<br>
+          //&nbsp;&nbsp;&nbsp; cship&nbsp; &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;
+          &lt;double&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Suites 40003 10000 165.91 447.15 85.83 27.07 125.09 176.80
+          857.43<br>
+        </font></p>
+      <p><font face="Courier New, Courier, monospace">// pship&nbsp;
+          name index parent(dock/port) weight length width draft
+          numPassengers numRooms numOccupied<br>
+          //&nbsp;&nbsp;&nbsp; pship&nbsp; &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;
+          &lt;double&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</font><br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp;&nbsp;
+          pship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "ZZZ_Hysterics" 30002
+          20002 103.71 327.92 56.43 30.23 3212 917 917<br>
+        </font> </p>
+      <p><font face="Courier New, Courier, monospace">// person name
+          index parent skill<br>
+          //&nbsp;&nbsp;&nbsp; person &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;string&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Alberto 50013 10001 cleaner<br>
+        </font></p>
+      <p><font face="Courier New, Courier, monospace">//
+          job&nbsp;&nbsp;&nbsp; name index parent duration [skill]*
+          (zero or more, matches skill in person, may repeat)<br>
+          //&nbsp;&nbsp;&nbsp; job&nbsp;&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt; &lt;double&gt; [&lt;string&gt;]* (ie,
+          zero or more)<br>
+          &nbsp;&nbsp;&nbsp;
+          job&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Job_10_94_27 60020 30007 77.78 carpenter cleaner clerk</font><br>
+      </p>
+    </blockquote>
+    <p>You may assume that the data file is correctly formatted and that
+      the parent links exist and are encountered in the data file as
+      item indices before they are referenced as parent links.<br>
+    </p>
+    <p>There is a Java program (CreateSeaPortDataFile.java) provided
+      with this package that will generate data files with various
+      characteristics with the correct format. You should be using the
+      program to generate your own data files to test various aspects of
+      your project programs. <br>
+    </p>
+    <h3>Sample input file:</h3>
+    <blockquote>
+      <p><font face="Courier New, Courier, monospace">// File: aSPaa.txt<br>
+          // Data file for SeaPort projects<br>
+          // Date: Sat Jul 09 22:51:16 EDT 2016<br>
+          // parameters: 1 1 5 5 1 5<br>
+          //&nbsp;&nbsp; ports, docks, pships, cships, jobs, persons<br>
+          <br>
+          // port&nbsp;&nbsp; name index parent(null)<br>
+          //&nbsp;&nbsp;&nbsp; port&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt;<br>
+          port Lanshan 10000 0<br>
+          <br>
+          // dock&nbsp;&nbsp; name index parent(port)<br>
+          //&nbsp;&nbsp;&nbsp; dock&nbsp;&nbsp; &lt;string&gt;
+          &lt;int&gt; &lt;int&gt;<br>
+          &nbsp; dock Pier_4 20004 10000 30004<br>
+          &nbsp; dock Pier_0 20000 10000 30000<br>
+          &nbsp; dock Pier_1 20001 10000 30001<br>
+          &nbsp; dock Pier_3 20003 10000 30003<br>
+          &nbsp; dock Pier_2 20002 10000 30002<br>
+          <br>
+          // pship&nbsp; name index parent(dock/port) weight length
+          width draft numPassengers numRooms numOccupied<br>
+          //&nbsp;&nbsp;&nbsp; pship&nbsp; &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;
+          &lt;double&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          pship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Gallinules 30000 20000 125.99 234.70 60.67 37.14 746 246 246<br>
+          &nbsp;&nbsp;&nbsp;
+          pship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Remora 30001 20001 126.38 358.27 74.12 31.54 3768 979 979<br>
+          &nbsp;&nbsp;&nbsp; pship&nbsp;&nbsp;&nbsp;&nbsp;
+          Absentmindedness 30004 20004 86.74 450.43 33.13 41.67 2143 920
+          920<br>
+          &nbsp;&nbsp;&nbsp;
+          pship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Preanesthetic
+          30003 20003 149.85 483.92 125.71 31.21 166 409 83<br>
+          &nbsp;&nbsp;&nbsp;
+          pship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Shoetrees 30002 20002 134.41 156.96 120.31 35.20 1673 633 633<br>
+          <br>
+          // cship&nbsp; name index parent(dock/port) weight length
+          width draft cargoWeight cargoVolume cargoValue<br>
+          //&nbsp;&nbsp;&nbsp; cship&nbsp; &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;
+          &lt;double&gt; &lt;double&gt; &lt;double&gt; &lt;double&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Erosional 40001 10000 200.80 242.33 38.31 23.49 172.73 188.54
+          235.57<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Kielbasas 40000 10000 120.85 362.55 96.82 19.09 33.08 188.31
+          261.57<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Generics 40002 10000 79.90 234.26 73.18 15.71 125.27 179.00
+          729.95<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Barcelona 40003 10000 219.92 443.54 104.44 34.16 86.69 139.89
+          813.72<br>
+          &nbsp;&nbsp;&nbsp;
+          cship&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Toluene 40004 10000 189.12 448.99 73.97 37.67 88.90 175.03
+          1002.63<br>
+          <br>
+          // person name index parent skill<br>
+          //&nbsp;&nbsp;&nbsp; person &lt;string&gt; &lt;int&gt;
+          &lt;int&gt; &lt;string&gt;<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Sara 50000 10000 electrician<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Duane 50002 10000 inspector<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Betsy 50004 10000 cleaner<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Archie 50003 10000 captain<br>
+          &nbsp;&nbsp;&nbsp;
+          person&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          Thomas 50001 10000 clerk</font><br>
+      </p>
+    </blockquote>
+    <p>Sample output as plain text - which should be displayed in a
+      JTextArea on a JScrollPane in the BorderLayout.CENTER area of a
+      JFrame:<br>
+    </p>
+    <blockquote>
+      <p><font face="Courier New, Courier, monospace">&gt;&gt;&gt;&gt;&gt;
+
+
+
+          The world:<br>
+          <br>
+          <br>
+          SeaPort: Lanshan 10000 <br>
+          <br>
+          &nbsp; Dock: Pier_4 20004 <br>
+          &nbsp;&nbsp;&nbsp; Ship: Passenger ship: Absentmindedness
+          30004 <br>
+          <br>
+          &nbsp; Dock: Pier_0 20000 <br>
+          &nbsp;&nbsp;&nbsp; Ship: Passenger ship: Gallinules 30000 <br>
+          <br>
+          &nbsp; Dock: Pier_1 20001 <br>
+          &nbsp;&nbsp;&nbsp; Ship: Passenger ship: Remora 30001 <br>
+          <br>
+          &nbsp; Dock: Pier_3 20003 <br>
+          &nbsp;&nbsp;&nbsp; Ship: Passenger ship: Preanesthetic 30003 <br>
+          <br>
+          &nbsp; Dock: Pier_2 20002 <br>
+          &nbsp;&nbsp;&nbsp; Ship: Passenger ship: Shoetrees 30002 <br>
+          <br>
+          &nbsp;--- List of all ships in que:<br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Erosional 40001 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Kielbasas 40000 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Generics 40002 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Barcelona 40003 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Toluene 40004 <br>
+          <br>
+          &nbsp;--- List of all ships:<br>
+          &nbsp;&nbsp; &gt; Passenger ship: Gallinules 30000 <br>
+          &nbsp;&nbsp; &gt; Passenger ship: Remora 30001 <br>
+          &nbsp;&nbsp; &gt; Passenger ship: Absentmindedness 30004 <br>
+          &nbsp;&nbsp; &gt; Passenger ship: Preanesthetic 30003 <br>
+          &nbsp;&nbsp; &gt; Passenger ship: Shoetrees 30002 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Erosional 40001 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Kielbasas 40000 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Generics 40002 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Barcelona 40003 <br>
+          &nbsp;&nbsp; &gt; Cargo Ship: Toluene 40004 <br>
+          <br>
+          &nbsp;--- List of all persons:<br>
+          &nbsp;&nbsp; &gt; Person: Sara 50000 electrician<br>
+          &nbsp;&nbsp; &gt; Person: Duane 50002 inspector<br>
+          &nbsp;&nbsp; &gt; Person: Betsy 50004 cleaner<br>
+          &nbsp;&nbsp; &gt; Person: Archie 50003 captain<br>
+          &nbsp;&nbsp; &gt; Person: Thomas 50001 clerk</font><br>
+      </p>
+    </blockquote>
+    <h3><a name="Suggestions:"></a>Suggestions:<br>
+    </h3>
+    <p>Methods that should be implemented.<br>
+    </p>
+    <p>Each class should have an appropriate toString method. Here is an
+      example of two such methods:<br>
+    </p>
+    <ul>
+      <li>In SeaPort - showing all the data structures:<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; public
+          String toString () {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String st = "\n\nSeaPort: " +
+          super.toString();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Dock md: docks) st += "\n"
+          + md;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st += "\n\n --- List of all
+          ships in que:";<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Ship ms: que ) st +=
+          "\n&nbsp;&nbsp; &gt; " + ms;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st += "\n\n --- List of all
+          ships:";<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Ship ms: ships) st +=
+          "\n&nbsp;&nbsp; &gt; " + ms;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; st += "\n\n --- List of all
+          persons:";<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Person mp: persons) st +=
+          "\n&nbsp;&nbsp; &gt; " + mp;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return st;<br>
+          &nbsp;&nbsp; } // end method toString</font><br>
+      </li>
+      <li>In PassengerShip, using parent toString effectively:<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; public
+          String toString () {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String st = "Passenger ship: "
+          + super.toString();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (jobs.size() == 0) <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return st;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Job mj: jobs) st +=
+          "\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - " + mj;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return st;<br>
+          &nbsp;&nbsp; } // end method toStrin</font>g</li>
+    </ul>
+    <p>Each class should have an appropriate Scanner constructor,
+      allowing the class to take advantage of super constructors, and
+      any particular constructor focusing only on the addition elements
+      of interest to that particular class. As an example, here's one
+      way to implement the PassengerShip constructor:<br>
+    </p>
+    <ul>
+      <li>PassengerShip Scanner constructor, the earlier fields are
+        handled by Thing (fields: name, index, parent) and Ship (fields:
+        weight, length, width, draft) constructors.<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; public
+          PassengerShip (Scanner sc) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; super (sc);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (sc.hasNextInt())
+          numberOfPassengers = sc.nextInt();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (sc.hasNextInt())
+          numberOfRooms = sc.nextInt();<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (sc.hasNextInt())
+          numberOfOccupiedRooms = sc.nextInt();<br>
+          &nbsp;&nbsp; } // end end Scanner constructor</font><br>
+      </li>
+    </ul>
+    <p>In the World class, we want to read the text file line by line.
+      Here are some useful methods types and code <b>fragments</b> that
+      you should find helpful:<br>
+    </p>
+    <ul>
+      <li>Handling a line from the file:<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; void
+          process (String st) { <br>
+          &nbsp;&nbsp; //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          System.out.println ("Processing &gt;" + st + "&lt;");<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scanner sc = new Scanner (st);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!sc.hasNext()) <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (sc.next()) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case
+          "port"&nbsp;&nbsp; : addPort&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          (sc); <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          break;</font><br>
+      </li>
+      <li>Finding a ship by index - finding the parent of a job, for
+        example:<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; Ship
+          getShipByIndex (int x) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (SeaPort msp: ports)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (Ship ms:
+          msp.ships)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          if (ms.index == x) <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+          return ms;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<br>
+          &nbsp;&nbsp; } // end getDockByIndex</font></li>
+      <li>Linking a ship to its parent:<br>
+        <font face="Courier New, Courier, monospace">&nbsp;&nbsp; void
+          assignShip (Ship ms) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dock md = getDockByIndex
+          (ms.parent);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (md == null) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          getSeaPortByIndex (ms.parent).ships.add (ms);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          getSeaPortByIndex (ms.parent).que.add (ms);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; md.ship = ms;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; getSeaPortByIndex
+          (md.parent).ships.add (ms);<br>
+          &nbsp;&nbsp; } // end method assignShip</font><br>
+      </li>
+    </ul>
+    <p>You will probably find the comments in the following helpful,
+      they are mostly about similar projects and general issues in Java
+      relevant to our programs:<br>
+    </p>
+    <ul>
+      <li><a href="http://sandsduchon.org/duchon/cs335/index.html">CMSC
+          335 Information</a></li>
+      <li><a
+          href="http://sandsduchon.org/duchon/cs335/cave/strategy.html">Cave
+
+
+          Strategy</a> - getting started<a
+          href="http://sandsduchon.org/duchon/cs335/cave/strategy.html"><br>
+        </a></li>
+    </ul>
+    <h2><a name="Project_2"></a>Project 2 - Also see <a
+href="file:///Users/HP_Administrator/Nick/aa%20UMUC/A%20Courses/CMSC/cs335/SeaPort/ProjectFiles/index.html#Grading">Grading</a></h2>
+    <p><span style=" font-size: medium;">Extend Project 1 to use
+        advanced data structures and support sorting on various keys.<br>
+      </span></p>
+    <p> <span style=" font-size: medium;">Elaboration:</span> </p>
+    <ol>
+      <li> Required data structure - the data structure specified in
+        Project 1:
+        <ol style=" list-style-type: lower-alpha;">
+          <li> World has SeaPort's<br>
+          </li>
+          <li>SeaPort has Dock's, Ship's, and Person's<br>
+          </li>
+          <li>Dock has a Ship<br>
+          </li>
+          <li>Ship has Job's<br>
+          </li>
+          <li>PassengerShip</li>
+          <li>CargoShip</li>
+          <li>Person has a skill<br>
+          </li>
+          <li>Job requires skills - optional until Project 3<br>
+          </li>
+          <li>PortTime<br>
+          </li>
+        </ol>
+      </li>
+      <li> Use the HashMap class to support efficient linking of the
+        classes used in Project 1.</li>
+      <ol>
+        <li>The instances of the hash map class should be local to the
+          readFile (Scanner) method.</li>
+        <li>These instances should be passed as explicit parameters to
+          other methods used when reading the data file.</li>
+        <ol>
+          <li>For example, the body of the methods like the following
+            should be replaced to effectively use a &lt;Integer,
+            Ship&gt; hash map, the surrounding code needs to support
+            this structure:<br>
+            <font face="Courier New, Courier, monospace">&nbsp;&nbsp;
+              Ship getShipByIndex (int x, java.util.HashMap &lt;Integer,
+              Ship&gt; hms) {<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return hms.get(x);<br>
+              &nbsp;&nbsp; } // end getDockByIndex</font></li>
+          <li>Since the body of this method has become trivial, perhaps
+            the call to this method can be simply replaced by the get
+            method of the HashMap.</li>
+          <li>Your code should be sure to handle a null return from this
+            call gracefully.<br>
+          </li>
+        </ol>
+        <li>The instances should be released (go out of scope, hence
+          available for garbage collection) when the readFile method
+          returns.</li>
+        <li>Comments: The idea here, besides getting some experience
+          with an interesting JDK Collections class, is to change the
+          operation of searching for an item with a particular index
+          from an O(N) operation, ie searching through the entire data
+          structure to see if the code can find the parent index
+          parameter, to an O(1) operation, a hash map lookup. Of course,
+          this isn't so very interesting in such a small program, but
+          consider what might happen with hundreds of ports, thousands
+          of ships, and perhaps millions of persons and jobs.</li>
+        <li>Comments: Also, after the readFile operation, the indices
+          are no longer interesting, and could be completely eliminated
+          from the program. In this program, removing the index
+          references could be accomplished by removing those variables
+          from the parent class, Thing.<br>
+        </li>
+      </ol>
+      <li>Implement comparators to support sorting:
+        <ul>
+          <li><span style=" background-color: #FFC20E;"> ships in port
+              que ArrayList's by weight, length, width, draft within
+              their port que</span> </li>
+          <li> <span style=" background-color: #FFC20E;"> all items
+              withing their ArrayList's by name</span> </li>
+          <li>OPTIONALLY: sorting by any other field that can be
+            compared<br>
+          </li>
+          <li>The sorting should be within the parent ArrayList<br>
+          </li>
+        </ul>
+      </li>
+      <li>Extend the GUI from Project 1 to allow the user to:
+        <ul>
+          <li>sort by the comparators defined in part 2.<br>
+          </li>
+        </ul>
+      </li>
+      <li>Again, the GUI elements should be distinct from the other
+        classes in the program. </li>
+    </ol>
+    <h2><a name="Project_3"></a>Project 3 - Also see <a
+href="file:///Users/HP_Administrator/Nick/aa%20UMUC/A%20Courses/CMSC/cs335/SeaPort/ProjectFiles/index.html#Grading">Grading</a></h2>
+    <p><span style=" font-size: medium;">Implement threads and a GUI
+        interface using advanced Java Swing classes.</span> </p>
+    <p><span style=" font-size: medium;">The project will be graded
+        according the criteria for the final project - see below.</span></p>
+    <p><span style=" font-size: medium;">Elaboration:</span></p>
+    <ol>
+      <li><span style=" font-size: medium;">Required data</span> the
+        data structure specified in Project 1: </li>
+      <ol>
+        <li> World has SeaPort's<br>
+        </li>
+        <li>SeaPort has Dock's, Ship's, and Person's<br>
+        </li>
+        <li>Dock has a Ship<br>
+        </li>
+        <li>Ship has Job's<br>
+        </li>
+        <li>PassengerShip</li>
+        <li>CargoShip</li>
+        <li>Person has a skill<br>
+        </li>
+        <li>Job requires skills<span style=" font-size: medium;">- <span
+              style="background-color: rgb(0, 255, 0);">NEW CLASS for
+              this project!</span></span> </li>
+        <li>PortTime</li>
+      </ol>
+      <li><span style=" font-size: medium;">Extend Project 2 to use the
+          Swing class JTree effectively to display the contents of the
+          data file.</span> <br>
+        <ul>
+          <li><span style=" background-color: #FFC20E;"><span style="
+                font-size: medium;">(Optional)</span></span><span
+              style=" font-size: medium;"> Implement a JTable to also
+              show the contents of the data file. There are lots of
+              options here for extending your program.<br>
+            </span></li>
+        </ul>
+      </li>
+      <li><span style=" font-size: medium;">Threads:</span>
+        <ul>
+          <li><span style=" font-size: medium;">Implement a thread for
+              each <span style=" background-color: rgb(255, 204, 0);">job</span>
+              representing a task that ship requires.</span></li>
+          <li><span style=" font-size: medium;">Use the synchronize
+              directive to avoid race conditions and insure that a dock
+              is performing the jobs for only one ship at a time.</span></li>
+          <ul>
+            <li><span style=" font-size: medium;">the jobs of a ship in
+                the queue should not be progressing</span></li>
+            <li><span style=" font-size: medium;">when all the jobs for
+                a ship are done, the ship should leave the dock,
+                allowing a ship from the que to dock</span></li>
+            <li><span style=" font-size: medium;">once the ship is
+                docked, the ships jobs should all progress</span></li>
+            <li><span style=" font-size: medium;">in Project 4, the jobs
+                will also require persons with appropriate skills.<br>
+              </span></li>
+          </ul>
+          <li><span style=" font-size: medium;">The thread for each job
+              should be started as the job is read in from the data
+              file.<br>
+            </span></li>
+          <li><span style=" font-size: medium;">Use delays to simulate
+              the progress of each job.</span></li>
+          <li><span style=" font-size: medium;">Use a JProgressBar for
+              each job to display the progress of that job.<br>
+            </span></li>
+          <li><span style=" font-size: medium;">Use JButton's on the Job
+              panel to allow the job to be suspended or cancelled.<br>
+            </span></li>
+        </ul>
+      </li>
+      <li><span style=" font-size: medium;">As before, the GUI elements
+          should be distinct (as appropriate) from the other classes in
+          the program.</span></li>
+      <li><span style=" font-size: medium;">See the code at the end of
+          this posting for some suggestions.</span></li>
+    </ol>
+    <p>Suggestions for Project 3 Job class. Here is a sample of code for
+      a Job class in another context, the Sorcerer's Cave project. The
+      code for this class will need some modifications, but this should
+      give you an idea of the issues involved.<br>
+      In fact, you should find much of this code redundant.<br>
+    </p>
+    <p>Also, some of the code at the following sites might give you some
+      ideas about how to proceed with this project:<br>
+    </p>
+    <ul>
+      <li><a
+          href="http://sandsduchon.org/duchon/cs335/cave/p3example.html">Project
+          3 Example</a> - Sorcerer's Cave, note that even this one isn't
+        complete</li>
+      <li><a
+          href="http://sandsduchon.org/duchon/cs335/cave/runMethod.html">run
+          method</a> - detailed analysis of the run method in the Job
+        class in the Cave project<br>
+      </li>
+    </ul>
+    <p><font face="Courier New, Courier, monospace"> //
+        j:&lt;index&gt;:&lt;name&gt;:&lt;creature
+        index&gt;:&lt;time&gt;[:&lt;required artifact
+        type&gt;:&lt;number&gt;]*</font><br>
+      <font face="Courier New, Courier, monospace"> <span
+          style="background-color: orange">class Job extends CaveElement
+          implements Runnable {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; static Random
+        rn = new Random ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; JPanel
+        parent;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; Creature
+        worker = null;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; int jobIndex;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; long jobTime;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; String
+        jobName = "";</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; JProgressBar
+        pm = new JProgressBar ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; boolean
+        goFlag = true, noKillFlag = true;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; JButton
+        jbGo&nbsp;&nbsp; = new JButton ("Stop");</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; JButton
+        jbKill = new JButton ("Cancel");</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; Status status
+        = Status.SUSPENDED;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; enum Status
+        {RUNNING, SUSPENDED, WAITING, DONE};</font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">public Job (HashMap
+          &lt;Integer, CaveElement&gt; hmElements, JPanel cv, Scanner
+          sc) {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent = cv;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        sc.next (); // dump first field, j</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        jobIndex = sc.nextInt ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        jobName = sc.next ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        int target = sc.nextInt ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        worker = (Creature) (hmElements.get (target));</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        jobTime = sc.nextInt ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        pm = new JProgressBar ();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        pm.setStringPainted (true);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent.add (pm);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent.add (new JLabel (worker.name, SwingConstants.CENTER));</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent.add (new JLabel (jobName&nbsp;&nbsp;&nbsp; ,
+        SwingConstants.CENTER));</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp; &nbsp;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent.add (jbGo);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        parent.add (jbKill);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp; &nbsp;</font><br>
+      <font face="Courier New, Courier, monospace"> <ndt>&nbsp;&nbsp;&nbsp;
+          jbGo.addActionListener (new ActionListener () {</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void actionPerformed
+          (ActionEvent e) {</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; toggleGoFlag ();</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp; });</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt> </ndt> </font><br>
+      <font face="Courier New, Courier, monospace"> <ndt>&nbsp;&nbsp;&nbsp;
+          jbKill.addActionListener (new ActionListener () {</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void actionPerformed
+          (ActionEvent e) {</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setKillFlag ();</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt>
+          &nbsp;&nbsp;&nbsp; });</ndt></font><br>
+      <font face="Courier New, Courier, monospace"><ndt> </ndt>&nbsp;&nbsp;&nbsp;
+      </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        new Thread (this).start();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        // end constructor</font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace">
+        //&nbsp;&nbsp;&nbsp;&nbsp; JLabel jln = new JLabel
+        (worker.name);</font><br>
+      <font face="Courier New, Courier, monospace"> // &nbsp; &nbsp;
+        &nbsp; following shows how to align text relative to icon</font><br>
+      <font face="Courier New, Courier, monospace">
+        //&nbsp;&nbsp;&nbsp;&nbsp; jln.setHorizontalTextPosition
+        (SwingConstants.CENTER);</font><br>
+      <font face="Courier New, Courier, monospace">
+        //&nbsp;&nbsp;&nbsp;&nbsp; jln.setHorizontalAlignment
+        (SwingConstants.CENTER);</font><br>
+      <font face="Courier New, Courier, monospace">
+        //&nbsp;&nbsp;&nbsp;&nbsp; parent.jrun.add (jln);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">public void toggleGoFlag () {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        goFlag = !goFlag;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        // end method toggleRunFlag</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">public void setKillFlag () {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        noKillFlag = false;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        jbKill.setBackground (Color.red);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        // end setKillFlag</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">void showStatus (Status st) {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        status = st;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        switch (status) {</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case RUNNING:</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setBackground
+        (Color.green);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setText
+        ("Running");</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case SUSPENDED:</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setBackground
+        (Color.yellow);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setText
+        ("Suspended");</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case WAITING:</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setBackground
+        (Color.orange);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setText
+        ("Waiting turn");</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case DONE:</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setBackground
+        (Color.red);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jbGo.setText
+        ("Done");</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp; }
+        // end switch on status</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        // end showStatus</font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">public void run () {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        long time = System.currentTimeMillis();</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        long startTime = time;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        long stopTime = time + 1000 * jobTime;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        double duration = stopTime - time;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp; &nbsp;</font><br>
+      <font face="Courier New, Courier, monospace"> <span
+          style="background-color: yellow">&nbsp;&nbsp;&nbsp;
+          synchronized (worker.party) { // party since looking forward
+          to P4 requirements</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (worker.busyFlag) {</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showStatus
+          (Status.WAITING);</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          worker.party.wait();</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch
+          (InterruptedException e) {</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } // end try/catch
+          block</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } // end while waiting for
+          worker to be free</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.busyFlag = true;</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow"> &nbsp;&nbsp;&nbsp; } // end
+          sychronized on worker</span></font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        while (time &lt; stopTime &amp;&amp; noKillFlag) {</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.sleep (100);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } catch (InterruptedException e)
+        {}</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (goFlag) {</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showStatus
+        (Status.RUNNING);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time += 100;</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pm.setValue
+        ((int)(((time - startTime) / duration) * 100));</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showStatus
+        (Status.SUSPENDED);</font><br>
+      <font face="Courier New, Courier, monospace">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } // end if stepping</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp; }
+        // end runninig</font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        pm.setValue (100);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        showStatus (Status.DONE);</font><br>
+      <font face="Courier New, Courier, monospace"> <span
+          style="background-color: yellow">&nbsp;&nbsp;&nbsp;
+          synchronized (worker.party) {</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.busyFlag = false; </span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.party.notifyAll ();</span></font><br>
+      <font face="Courier New, Courier, monospace"><span
+          style="background-color: yellow"> &nbsp;&nbsp;&nbsp; }</span></font><br>
+      <font face="Courier New, Courier, monospace"> </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        // end method run - implements runnable</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; <span
+          style="background-color: lime">public String toString () {</span></font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        String sr = String.format ("j:%7d:%15s:%7d:%5d", jobIndex,
+        jobName, worker.index, jobTime);</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp;&nbsp;&nbsp;
+        return sr;</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><font
+        face="Courier New, Courier, monospace"><font face="Courier New,
+          Courier, monospace"><span style="background-color: lime">}</span></font>
+        //end method toString</font><br>
+      <font face="Courier New, Courier, monospace"> &nbsp; </font><br>
+      <font face="Courier New, Courier, monospace"> <span
+          style="background-color: orange">}</span> // end class Job</font></p>
+    <h2><a name="Project_4"></a>Project 4 - Also see <a
+href="file:///Users/HP_Administrator/Nick/aa%20UMUC/A%20Courses/CMSC/cs335/SeaPort/ProjectFiles/index.html#Grading">Grading</a></h2>
+    <p>Extend project 3 to include making jobs wait until people with
+      the resources required by the job are available at the port.<br>
+    </p>
+    <p>Elaboration:</p>
+    <ol>
+      <li>Reading Job specifications from a data file and adding the
+        required resources to each Job instance.<br>
+      </li>
+      <li>Resource pools - SeaPort.ArrayList &lt;Person&gt; list of
+        persons with particular skills at each port, treated as resource
+        pools, along with supporting assignment to ships and jobs.<br>
+      </li>
+      <li>Job threads - using the resource pools and supporting the
+        concept of blocking until required resources are available
+        before proceeding.</li>
+      <li>The Job threads should be efficient:</li>
+      <ol>
+        <li>If the ship is at a dock and all the people with required
+          skills are available, the job should start.<br>
+        </li>
+        <li>Otherwise, the Job should not hold any resources if it
+          cannot progress. <br>
+        </li>
+        <li>Use synchronization to avoid race conditions.</li>
+        <li>Each Job thread should hold any required synchronization
+          locks for a very short period.</li>
+        <li>When a job is over, all the resources used by the job (the
+          people) should be released back to the port.</li>
+        <li>When all the jobs of a ship are done, the ship should depart
+          the dock and if there are any ships in the port que, one of
+          then should should be assigned to the free dock, and that
+          ships jobs can now try to progress.</li>
+        <li>NOTE: If a job can never progress because the port doesn't
+          have enough skills among all the persons at the port, the
+          program should report this and cancel the job.<br>
+        </li>
+      </ol>
+      <li>GUI showing:
+        <ul>
+          <li>Resources in pools - how many people with skill are
+            currently available<br>
+          </li>
+          <li>Thread progress, resources acquired, and resources
+            requests still outstanding</li>
+        </ul>
+      </li>
+    </ol>
+    <h2><a name="Grading"></a>Grading</h2>
+    <h3>Deliverables - for all projects:<br>
+    </h3>
+    <ol>
+      <li>Java source code files</li>
+      <li>Data files used to test your program<br>
+      </li>
+      <li> Configuration files used </li>
+      <li>A well-written document including the following sections:
+        <ol type="a">
+          <li>Design: including a UML class diagram showing the type of
+            the class relationships</li>
+          <li>User's Guide: description of how to set up and run your
+            application</li>
+          <li>Test Plan: sample input and <em><strong>expected</strong></em>
+            results, and including test data and results, with screen
+            snapshots of some of your test cases</li>
+          <li>(optionally) Comments: design strengths and limitations,
+            and suggestions for future improvement and alternative
+            approaches</li>
+          <li>&nbsp;Lessons Learned</li>
+          <li>Use one of the following formats: MS Word doc, docx,
+            OpenOffice odf, pdf, rtf.</li>
+        </ol>
+      </li>
+    </ol>
+    <p>Your project is due by midnight, EST, on the day of the date
+      posted in the class schedule. We do not recommend staying up all
+      night working on your project - it is so very easy to really mess
+      up a project at the last minute by working when one was overly
+      tired. <br>
+    </p>
+    <p>Your instructor's policy on late projects applies to this
+      project.<br>
+      <br>
+      Submitted projects that show evidence of plagiarism will be
+      handled in accordance with UMUC Policy 150.25 — Academic
+      Dishonesty and Plagiarism.</p>
+    <h4>Format</h4>
+    <p>Documentation format and length. The documentation describing and
+      reflecting on your design and approach should be written using
+      Microsoft Word, and should be of reasonable length. The font size
+      should be 12 point. The page margins should be one inch. The
+      paragraphs should be double spaced. All figures, tables,
+      equations, and references should be properly labeled and formatted
+      using APA, IEEE or ACM style.<br>
+    </p>
+    <h3><a name="Coding_hints:"></a>Coding hints:<br>
+    </h3>
+    <ul>
+    </ul>
+    <ul>
+      <li>Code format: </li>
+      <ul>
+        <li>header comment block, including the following information in
+          each source code file: </li>
+        <li>file name</li>
+        <li>date</li>
+        <li>author</li>
+        <li>purpose </li>
+        <li>&nbsp;appropriate comments within the code</li>
+        <li>&nbsp;appropriate variable and function names</li>
+        <li>&nbsp;correct indentation </li>
+      </ul>
+      <li>Errors:</li>
+      <ul>
+        <li>code submitted with errors will be returned ungraded</li>
+      </ul>
+      <li>Warnings:</li>
+      <ul>
+        <li>Your program should have no warnings</li>
+        <li>Use the following compiler flag to show all warnings:<br>
+          <font face="Courier New, Courier, monospace">javac -Xlint
+            *.java</font></li>
+        <li><a
+            href="http://sandsduchon.org/duchon/Musings/a/warnings.html">More
+
+
+            about setting up IDE's to show warnings</a><br>
+        </li>
+        <li>Generics - your code should use generic declarations
+          appropriately, and to eliminate all warnings<br>
+        </li>
+      </ul>
+      <li>Elegance:</li>
+      <ul>
+        <li>just the right amount of code</li>
+        <li>effective use of existing classes in the JDK</li>
+        <li>effective use of the class hierarchy, including features
+          related to polymorphism.</li>
+      </ul>
+      <li>GUI notes:</li>
+      <ul>
+        <li>GUI should resize nicely</li>
+        <li>DO NOT use the GUI editor/generators in an IDE (integrated
+          development environment, such as Netbeans and Eclipse)</li>
+        <li>Do use JPanel, JFrame, JTextArea, JTextField, JButton,
+          JLabel, JScrollPane</li>
+        <ul>
+          <li>panels on panels gives even more control of the display
+            during resizing</li>
+          <li>JTable and/or JTree for Projects 2, 3 and 4</li>
+          <li>Font using the following gives a nicer display for this
+            program, setting for the JTextArea jta:<br>
+            <font face="Courier New, Courier, monospace">
+              &nbsp;&nbsp;&nbsp; jta.setFont (new java.awt.Font
+              ("Monospaced", 0, 12));</font><br>
+          </li>
+        </ul>
+        <li>GridLayout and BorderLayout - FlowLayout rarely resizes
+          nicely</li>
+        <ul>
+          <li>GridBagLayout for extreme control over the displays</li>
+          <li>you may wish to explore other layout managers<br>
+          </li>
+        </ul>
+        <li>ActionListener, ActionEvent - responding to JButton events</li>
+        <ul>
+          <li>Starting with JDK 8, lambda expression make defining
+            listeners MUCH simpler. See the example below, with jbr
+            (read), jbd (display) and jbs (search) three different
+            JButtons. <br>
+            jcb is a JComboBox &lt;String&gt; and jtf is a JTextField.<br>
+            <font face="Courier New, Courier, monospace">&nbsp;&nbsp;&nbsp;
+              jbr.addActionListener (e -&gt; readFile());<br>
+              &nbsp;&nbsp;&nbsp; jbd.addActionListener (e -&gt;
+              displayCave ());<br>
+              &nbsp;&nbsp;&nbsp; jbs.addActionListener (e -&gt; search
+              ((String)(jcb.getSelectedItem()), jtf.getText()));</font><br>
+          </li>
+        </ul>
+        <li>JFileChooser - select data file at run time</li>
+        <li>JProgressBar in Projects 3 and 4</li>
+        <li>JSplitPane - optional, but gives user even more control over
+          display panels<br>
+        </li>
+      </ul>
+    </ul>
+    <h4>Grading Table<br>
+    </h4>
+    <table border="1" cellpadding="10">
+      <tbody>
+        <tr>
+          <td align="center">Attributes</td>
+          <td align="center">Value</td>
+        </tr>
+        <tr>
+          <td>Project design</td>
+          <td align="right">20 points</td>
+        </tr>
+        <tr>
+          <td>Project functionality</td>
+          <td align="right">40 points</td>
+        </tr>
+        <tr>
+          <td>Test data</td>
+          <td align="right">20 points</td>
+        </tr>
+        <tr>
+          <td>Approach documentation</td>
+          <td align="right">15 points</td>
+        </tr>
+        <tr>
+          <td>Approach documentation<br>
+            grammar and spelling</td>
+          <td align="right">5 points</td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td align="right">100 points</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2><a name="Package"></a>Package</h2>
+    <p>The files in the zip file package:<br>
+    </p>
+    <ul>
+      <li>index.html - this file, project descriptions with suggestions
+        and hints</li>
+      <li>CreateSeaPortDataFile.java - command line driven java
+        application source code</li>
+      <ul>
+        <li>optional parameters - random indicates that the exact number
+          is based on a random number<br>
+        </li>
+        <ul>
+          <li>? will print a usage message</li>
+          <li>[0] - first parameter, a String specifying the output file
+            name</li>
+          <li>[1] - number of ports</li>
+          <li>[2] - number of docks per port (random)<br>
+          </li>
+          <li>[3] - number of passenger ships per port (random)</li>
+          <li>[4] - number of cargo ships per port (random)</li>
+          <li>[5] - number of jobs per ship (random)<br>
+          </li>
+          <li>[6] - number of persons per port (random)</li>
+        </ul>
+      </ul>
+      <li>files used to generate names</li>
+      <ul>
+        <li>You can change the contents of these files, or substitute
+          simply the giving a different list of names file one of the
+          following file names.<br>
+        </li>
+        <li>personNames.txt - 1000 names from census lists of popular
+          names</li>
+        <li>portNames.txt - 1741 names of ports around the world</li>
+        <li>shipNames.txt - 109,582 words from a dictionary - SIL
+          International Linguistics Department, 7500 W. Camp Wisdom
+          Road, Dallas, TX&nbsp; 75236, U.S.A.<br>
+          I have not taken the time to remove words that might be
+          offensive - there are just too many of them.</li>
+        <li>skillNames.txt - just a random selection. Note that making
+          this longer makes it harder for jobs to find the skills they
+          require at the ports.</li>
+      </ul>
+      <li>Sample data files - generated by the
+        CreateSeaPortDataFile.java application</li>
+      <ul>
+        <li>aSPaa.txt - (1 1 5 5 1 5) - a relatively small data set, 1
+          port, 5 docks, 11 ships, 5 people<br>
+        </li>
+        <li>aSPab.txt - much larger example with 5 ports, 38 (or so)
+          docks<br>
+        </li>
+        <li>aSPac.txt - (8, 15, 20, 20, 5, 30) - another large data file<br>
+        </li>
+        <li>aSPad.txt - (3, 4, 5, 6, 7, 8) - a middling size data file<br>
+        </li>
+        <li>aSPae.txt - (8, 15, 20, 20, 5, 30) - another large data
+          file, same parameters as aSPac, but different (random) output
+          from the creator program.<br>
+        </li>
+      </ul>
+    </ul>
+    <h2> </h2>
+  </body>
+</html>
