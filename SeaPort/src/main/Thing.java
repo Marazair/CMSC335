@@ -7,12 +7,6 @@ public class Thing implements Comparable<Thing> {
 	private int index, parent;
 	private String name;
 	
-	public Thing(int index, int parent, String name) {
-		this.name = name;
-		this.index = index;
-		this.parent = parent;
-	}
-	
 	public Thing(Scanner sc) {
 		if (sc.hasNext()) name = sc.next();
 		if (sc.hasNextInt()) index = sc.nextInt();
