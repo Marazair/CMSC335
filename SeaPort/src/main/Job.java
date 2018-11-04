@@ -9,6 +9,9 @@ public class Job extends Thing {
 	
 	public Job(Scanner sc) {
 		super(sc);
+		
+		requirements = new ArrayList<String>();
+		
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
 	}

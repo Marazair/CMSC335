@@ -9,6 +9,9 @@ public class Ship extends Thing {
 	
 	public Ship(Scanner sc) {
 		super(sc);
+		
+		jobs = new ArrayList<Job>();
+		
 		if(sc.hasNextDouble()) weight = sc.nextDouble();
 		if(sc.hasNextDouble()) length = sc.nextDouble();
 		if(sc.hasNextDouble()) width = sc.nextDouble();

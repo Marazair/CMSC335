@@ -11,13 +11,16 @@ package main;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+
+import java.awt.BorderLayout;
 import java.awt.event.*;
 
 public class SeaPortProgram extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -3927369720013543277L;
 	
 	private World world;
-
+	JTextArea jta = new JTextArea();
+	
 	public SeaPortProgram() {
 		JFileChooser chooser = new JFileChooser(".");
 		File file = null;
@@ -49,6 +52,9 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		JScrollPane jsp = new JScrollPane(jta);
+		add(jsp, BorderLayout.CENTER);
 		
 	}
 

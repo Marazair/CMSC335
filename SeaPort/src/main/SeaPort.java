@@ -10,6 +10,10 @@ public class SeaPort extends Thing {
 	
 	public SeaPort(Scanner sc) {
 		super(sc);
+		
+		docks = new ArrayList<Dock>();
+		ships = new ArrayList<Ship>();
+		persons = new ArrayList<Person>();
 	}
 	
 	public void addDock(Dock dock) {

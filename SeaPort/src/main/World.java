@@ -38,6 +38,7 @@ public class World extends Thing {
 			addPerson(new Person(sc));
 			break;
 		}
+		sc.close();
 	}
 	
 	public int getTime() {
@@ -59,6 +60,7 @@ public class World extends Thing {
 		
 		try {
 			getPortByIndex(index).addShip(ship);
+			return;
 		}
 		catch (NoSuchObject nse) {}
 		
