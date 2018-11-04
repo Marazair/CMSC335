@@ -52,4 +52,8 @@ public class SeaPort extends Thing {
 	public ArrayList<Dock> getDocks() {
 		return docks;
 	}
+	
+	public ArrayList<Person> getPersons() {
+		return persons;
+	}
 }

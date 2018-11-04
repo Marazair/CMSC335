@@ -18,6 +18,10 @@ public class Ship extends Thing {
 		if(sc.hasNextDouble()) draft = sc.nextDouble();
 	}
 	
+	public ArrayList<Job> getJobs() {
+		return jobs;
+	}
+	
 	public String toString() {
 		String st = super.toString();
 		if (jobs.size() == 0) 
