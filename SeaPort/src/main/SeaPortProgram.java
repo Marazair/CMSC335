@@ -7,13 +7,45 @@
  */
 
 package main;
-import javax.swing.*;
 
-public class SeaPortProgram extends JFrame {
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class SeaPortProgram extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -3927369720013543277L;
+	
+	private World world;
 
 	public SeaPortProgram() {
-		setTitle("Sea Port World");
+		JFileChooser chooser = new JFileChooser(".");
+		File file = null;
+		StringBuffer nsoMessages = new StringBuffer("");
+		boolean nsoFound = false;
+		
+		int returnVal = chooser.showOpenDialog(this);
+		
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			file = chooser.getSelectedFile();
+			
+			try {
+				world = new World(new Scanner(file));
+			}
+			catch (FileNotFoundException fnfe) {
+				JOptionPane.showMessageDialog(this, file.getName() + "not found.");
+			}
+			catch (NoSuchObject nso) {
+				nsoMessages.append(nso.getMessage() + "\n");
+				nsoFound = true;
+			}
+			
+			if (nsoFound == true) {
+				JOptionPane.showMessageDialog(this, nsoMessages.toString());
+			}
+		}
+		
+		setTitle("Seaport World");
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -21,11 +53,16 @@ public class SeaPortProgram extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		JFileChooser chooser = new JFileChooser();
+		
 		SeaPortProgram spp = new SeaPortProgram();
 		
-		spp.add(chooser);
+		
+	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

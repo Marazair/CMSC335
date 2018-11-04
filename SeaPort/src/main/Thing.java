@@ -7,6 +7,12 @@ public class Thing implements Comparable<Thing> {
 	private int index, parent;
 	private String name;
 	
+	public Thing() {
+		name = "";
+		index = 0;
+		parent = 0;
+	}
+	
 	public Thing(Scanner sc) {
 		if (sc.hasNext()) name = sc.next();
 		if (sc.hasNextInt()) index = sc.nextInt();
@@ -18,7 +24,15 @@ public class Thing implements Comparable<Thing> {
 		return 0;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public String getName() {
+		return name;
+	}
+	
+	public int getIndex() {
+		return index;
+	}
+	
+	public int getParent() {
+		return parent;
 	}
 }
