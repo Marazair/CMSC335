@@ -17,4 +17,12 @@ public class Ship extends Thing {
 		if(sc.hasNextDouble()) width = sc.nextDouble();
 		if(sc.hasNextDouble()) draft = sc.nextDouble();
 	}
+	
+	public String toString() {
+		String st = super.toString();
+		if (jobs.size() == 0) 
+	         return st;
+	    for (Job mj: jobs) st += "\n       - " + mj;
+	    return st;
+	}
 }

@@ -35,4 +35,9 @@ public class Thing implements Comparable<Thing> {
 	public int getParent() {
 		return parent;
 	}
+	
+	public String toString() {
+		String st = name + " " + index;
+		return st;
+	}
 }

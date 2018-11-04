@@ -9,4 +9,10 @@ public class Person extends Thing {
 		super(sc);
 		if(sc.hasNext()) skill = sc.next();
 	}
+	
+	public String toString() {
+		String st = "Person: " + super.toString();
+		st += " " + skill;
+		return st;
+	}
 }

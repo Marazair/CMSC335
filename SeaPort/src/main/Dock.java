@@ -13,5 +13,11 @@ public class Dock extends Thing {
 		this.ship = ship;
 	}
 	
+	public String toString() {
+		String st = "Dock: " + super.toString();
+		if(ship != null)
+			st += "\n    Ship: " + ship;
+		return st;
+	}
 	
 }

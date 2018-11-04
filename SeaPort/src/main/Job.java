@@ -15,4 +15,15 @@ public class Job extends Thing {
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
 	}
+	
+	public String toString() {
+		String st = "Job: " + super.toString();
+		st += "\n  Duration: " + duration;
+		st += "\n  Requirements: ";
+		
+		for (String str: requirements)
+			st += "\n    -" + str;
+		
+		return st;
+	}
 }

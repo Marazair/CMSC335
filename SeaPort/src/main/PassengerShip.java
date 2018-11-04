@@ -38,4 +38,9 @@ public class PassengerShip extends Ship {
 			return -1;
 		}
 	}
+	
+	public String toString() {
+		String st = "Passenger Ship: " + super.toString();
+		return st;
+	}
 }

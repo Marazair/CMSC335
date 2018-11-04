@@ -10,4 +10,8 @@ public class PortTime {
 	public int getTime() {
 		return time;
 	}
+	
+	public String toString() {
+		return "Time: " + time;
+	}
 }

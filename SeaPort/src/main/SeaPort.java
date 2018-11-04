@@ -13,6 +13,7 @@ public class SeaPort extends Thing {
 		
 		docks = new ArrayList<Dock>();
 		ships = new ArrayList<Ship>();
+		queue = new ArrayList<Ship>();
 		persons = new ArrayList<Person>();
 	}
 	
@@ -26,7 +27,22 @@ public class SeaPort extends Thing {
 	
 	public void addPerson(Person person) {
 		persons.add(person);
-		
+	}
+	
+	public void queueShip(Ship ship) {
+		queue.add(ship);
+	}
+	
+	public String toString () {
+		String st = "\n\nSeaPort: " + super.toString();
+		for (Dock md: docks) st += "\n  " + md + "\n";
+		st += "\n\n --- List of all ships in queue:";
+		for (Ship ms: queue ) st += "\n   > " + ms;
+		st += "\n\n --- List of all ships:";
+		for (Ship ms: ships) st += "\n   > " + ms;
+		st += "\n\n --- List of all persons:";
+		for (Person mp: persons) st += "\n   > " + mp;
+		return st;
 	}
 
 	public ArrayList<Ship> getShips() {

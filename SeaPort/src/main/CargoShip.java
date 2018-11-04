@@ -24,4 +24,9 @@ public class CargoShip extends Ship {
 		cargoVolume -= volume;
 		cargoWeight -= weight;
 	}
+	
+	public String toString() {
+		String st = "Cargo Ship: " + super.toString();
+		return st;
+	}
 }

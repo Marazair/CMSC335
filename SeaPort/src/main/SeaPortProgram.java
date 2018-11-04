@@ -55,6 +55,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		
 		JScrollPane jsp = new JScrollPane(jta);
 		add(jsp, BorderLayout.CENTER);
+		jta.setText(world.toString());
 		
 	}
 

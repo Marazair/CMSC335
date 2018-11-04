@@ -59,7 +59,9 @@ public class World extends Thing {
 		int index = ship.getParent();
 		
 		try {
-			getPortByIndex(index).addShip(ship);
+			SeaPort port = getPortByIndex(index);
+			port.addShip(ship);
+			port.queueShip(ship);
 			return;
 		}
 		catch (NoSuchObject nse) {}
@@ -111,5 +113,15 @@ public class World extends Thing {
 		else {
 			return null;
 		}
+	}
+	
+	public String toString() {
+		String st = ">>>>> The world:";
+		
+		for(SeaPort sp: ports) {
+			st += sp;
+		}
+		
+		return st;
 	}
 }
