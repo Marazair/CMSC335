@@ -33,8 +33,10 @@ public class World extends Thing {
 			break;
 		case "cship":
 			addShip(new CargoShip(sc));
+			break;
 		case "person":
 			addPerson(new Person(sc));
+			break;
 		}
 	}
 	
