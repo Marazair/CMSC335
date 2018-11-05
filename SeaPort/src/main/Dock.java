@@ -1,3 +1,10 @@
+/*
+ * File: Dock.java
+ * Date: 11/1/2018
+ * Author: Nicholas Mills
+ * Purpose: Contains logic for Dock objects.
+ */
+
 package main;
 
 import java.util.Scanner;

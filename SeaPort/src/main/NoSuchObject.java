@@ -1,3 +1,12 @@
+/*
+ * File: NoSuchObject.java
+ * Date: 11/1/2018
+ * Author: Nicholas Mills
+ * Purpose: Provides an exception to be thrown
+ * 			in the event of missing or incorrect
+ * 			objects.
+ */
+
 package main;
 
 public class NoSuchObject extends Exception {

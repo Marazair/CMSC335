@@ -1,3 +1,10 @@
+/*
+ * File: Ship.java
+ * Date: 11/1/2018
+ * Author: Nicholas Mills
+ * Purpose: Contains logic for Ship objects.
+ */
+
 package main;
 
 import java.util.*;

@@ -1,3 +1,10 @@
+/*
+ * File: PassengerShip.java
+ * Date: 11/1/2018
+ * Author: Nicholas Mills
+ * Purpose: Contains logic for PassengerShip objects.
+ */
+
 package main;
 
 import java.util.*;

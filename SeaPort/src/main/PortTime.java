@@ -1,3 +1,10 @@
+/*
+ * File: PortTime.java
+ * Date: 11/1/2018
+ * Author: Nicholas Mills
+ * Purpose: Contains logic for PortTime objects.
+ */
+
 package main;
 
 public class PortTime {
