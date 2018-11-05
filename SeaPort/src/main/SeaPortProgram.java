@@ -102,11 +102,11 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		setTitle("Seaport World");
 		setSize(500, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 
 	public static void main(String[] args) {
 		SeaPortProgram spp = new SeaPortProgram();
+		spp.setVisible(true);
 	}
 
 	@Override
