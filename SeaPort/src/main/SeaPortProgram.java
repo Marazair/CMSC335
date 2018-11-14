@@ -19,9 +19,13 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	
 	private World world;
 	private JTextArea jta = new JTextArea();
-	private JTextField indexField = new JTextField("");
-	private JTextField nameField = new JTextField("");
-	private JTextField parentField = new JTextField("");
+	private JTextField searchField = new JTextField("");
+	
+	private JRadioButton indexRadio = new JRadioButton("Index");
+	private JRadioButton nameRadio = new JRadioButton("Name");
+	private JRadioButton parentRadio = new JRadioButton("Parent");
+	
+	ButtonGroup radio = new ButtonGroup();	
 	
 	public SeaPortProgram() {
 		JFileChooser chooser = new JFileChooser(".");
@@ -57,43 +61,31 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		jta.setFont (new Font("Monospaced", 0, 12));
 		jta.setText(world.toString());
 		
-		JLabel indexLabel = new JLabel("Index:");
-		JLabel nameLabel = new JLabel("Name:");
-		JLabel parentLabel = new JLabel("Parent:");
+		radio.add(indexRadio);
+		radio.add(nameRadio);
+		radio.add(parentRadio);
 		
-		JButton indexSB = new JButton("Search");
-		JButton nameSB = new JButton("Search");
-		JButton parentSB = new JButton("Search");
+		JButton searchButton = new JButton("Search");
 		JButton reset = new JButton("Reset");
 		
-		indexSB.addActionListener(this);
-		indexSB.setActionCommand("index");
-		
-		nameSB.addActionListener(this);
-		nameSB.setActionCommand("name");
-		
-		parentSB.addActionListener(this);
-		parentSB.setActionCommand("parent");
+		searchButton.addActionListener(this);
+		searchButton.setActionCommand("search");
 		
 		reset.addActionListener(this);
 		reset.setActionCommand("reset");
 		
-		JPanel userPanel = new JPanel(new GridLayout(2, 1));
-		JPanel searchPanel = new JPanel(new GridLayout(3,3));
+		JPanel userPanel = new JPanel(new GridLayout(3, 1));
+		JPanel searchPanel = new JPanel(new GridLayout(1, 2));
+		JPanel radioPanel = new JPanel(new GridLayout(1, 3));
 		
 		userPanel.add(searchPanel);
+		searchPanel.add(searchField);
+		searchPanel.add(searchButton);
 		
-		searchPanel.add(indexLabel);
-		searchPanel.add(indexField);
-		searchPanel.add(indexSB);
-		
-		searchPanel.add(nameLabel);
-		searchPanel.add(nameField);
-		searchPanel.add(nameSB);
-		
-		searchPanel.add(parentLabel);
-		searchPanel.add(parentField);
-		searchPanel.add(parentSB);
+		userPanel.add(radioPanel);
+		radioPanel.add(indexRadio);
+		radioPanel.add(nameRadio);
+		radioPanel.add(parentRadio);
 		
 		userPanel.add(reset);
 		
@@ -111,39 +103,33 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("index")) {
+		if (e.getActionCommand().equals("search")) {
 			try {
-				int index = Integer.parseInt(indexField.getText());
-				jta.setText(world.indexSearch(index).toString());
-			} catch (NumberFormatException nfe) {
-				JOptionPane.showMessageDialog(this, "Invalid input. Please use a number.");
-			} catch (NoSuchObject nso) {
-				JOptionPane.showMessageDialog(this, nso.getMessage());
-			}
-		}
-		else if (e.getActionCommand().equals("name")) {
-			try {
-				String name = nameField.getText();
-				String results = "";
-				
-				for(Thing mt: world.nameSearch(name))
-					results += mt.toString() + "\n";
-				
-				jta.setText(results);
-			}
-			catch (NoSuchObject nso) {
-				JOptionPane.showMessageDialog(this, nso.getMessage());
-			}
-		}
-		else if (e.getActionCommand().equals("parent")) {
-			try {
-				int index = Integer.parseInt(parentField.getText());
-				String results = "";
-				
-				for(Thing mt: world.parentSearch(index))
-					results += mt.toString() + "\n";
-				
-				jta.setText(results);
+				if (indexRadio.isSelected()) {
+					int index = Integer.parseInt(searchField.getText());
+					jta.setText(world.indexSearch(index).toString());
+				}
+				else if (nameRadio.isSelected()) {
+					String name = searchField.getText();
+					String results = "";
+					
+					for(Thing mt: world.nameSearch(name))
+						results += mt.toString() + "\n";
+					
+					jta.setText(results);
+				}
+				else if (parentRadio.isSelected()) {
+					int index = Integer.parseInt(searchField.getText());
+					String results = "";
+					
+					for(Thing mt: world.parentSearch(index))
+						results += mt.toString() + "\n";
+					
+					jta.setText(results);
+				}
+				else {
+					JOptionPane.showMessageDialog(this, "Please select a search option.");
+				}
 			} catch (NumberFormatException nfe) {
 				JOptionPane.showMessageDialog(this, "Invalid input. Please use a number.");
 			} catch (NoSuchObject nso) {
