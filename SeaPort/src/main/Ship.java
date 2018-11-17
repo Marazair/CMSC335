@@ -9,7 +9,7 @@ package main;
 
 import java.util.*;
 
-public class Ship extends Thing {
+public class Ship extends Thing implements Sorter {
 	private PortTime arrivalTime, docktime;
 	private double draft, length, weight, width;
 	private ArrayList<Job> jobs;
@@ -67,5 +67,10 @@ public class Ship extends Thing {
 
 	public double getWidth() {
 		return width;
+	}
+
+	@Override
+	public void sort(Comparator<Thing> comparator) {
+		Collections.sort(jobs, comparator);
 	}
 }

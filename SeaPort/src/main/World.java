@@ -9,7 +9,7 @@ package main;
 
 import java.util.*;
 
-public class World extends Thing {
+public class World extends Thing implements Sorter {
 	private ArrayList<SeaPort> ports;
 	private PortTime time;
 	
@@ -315,5 +315,18 @@ public class World extends Thing {
 		}
 		
 		return st;
+	}
+
+	@Override
+	public void sort(Comparator<Thing> comparator) {
+		Collections.sort(ports, comparator);
+		for(SeaPort msp:ports) {
+			msp.sort(comparator);
+			for(Ship ms:msp.getShips()) {
+				ms.sort(comparator);
+				for(Job mj:ms.getJobs())
+					mj.sort(comparator);
+			}
+		}
 	}
 }

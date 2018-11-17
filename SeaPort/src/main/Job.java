@@ -8,9 +8,11 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
-public class Job extends Thing {
+public class Job extends Thing implements Sorter {
 	private double duration;
 	private ArrayList<String> requirements;
 	
@@ -32,5 +34,10 @@ public class Job extends Thing {
 			st += "\n    -" + str;
 		
 		return st;
+	}
+
+	@Override
+	public void sort(Comparator<Thing> comparator) {
+		Collections.sort(requirements);
 	}
 }

@@ -9,7 +9,7 @@ package main;
 
 import java.util.*;
 
-public class SeaPort extends Thing {
+public class SeaPort extends Thing implements Sorter {
 	
 	private ArrayList<Dock> docks;
 	private ArrayList<Ship> queue, ships;
@@ -62,5 +62,16 @@ public class SeaPort extends Thing {
 	
 	public ArrayList<Person> getPersons() {
 		return persons;
+	}
+
+	@Override
+	public void sort(Comparator<Thing> comparator) {
+		if(comparator instanceof NameComparator) {
+			Collections.sort(queue, comparator);
+			Collections.sort(ships, comparator);
+		}
+		else
+			Collections.sort(queue, comparator);
+		
 	}
 }
