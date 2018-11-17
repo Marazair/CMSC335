@@ -26,9 +26,8 @@ public class Thing implements Comparable<Thing> {
 		if (sc.hasNextInt()) parent = sc.nextInt();
 	}
 	
-	public int compareTo(Thing o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Thing thing) {
+		return this.index - thing.getIndex();
 	}
 	
 	public String getName() {
