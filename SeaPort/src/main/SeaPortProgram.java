@@ -11,6 +11,8 @@ package main;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.border.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -19,13 +21,16 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	
 	private World world;
 	private JTextArea jta = new JTextArea();
+	
 	private JTextField searchField = new JTextField("");
+	private String[] searchStrings = {"Index", "Name", "Parent"};
+	private JComboBox<String> searchList = new JComboBox<String>(searchStrings);
 	
-	private JRadioButton indexRadio = new JRadioButton("Index");
-	private JRadioButton nameRadio = new JRadioButton("Name");
-	private JRadioButton parentRadio = new JRadioButton("Parent");
+	private JTextField targetField = new JTextField("");
+	private String[] sortTargets = {"Port", "World", "Ship"};
+	private JComboBox<String> targetList = new JComboBox<String>(sortTargets);
 	
-	ButtonGroup radio = new ButtonGroup();	
+	private JComboBox<String> sortTypes = new JComboBox<String>();
 	
 	public SeaPortProgram() {
 		JFileChooser chooser = new JFileChooser(".");
@@ -61,31 +66,42 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		jta.setFont (new Font("Monospaced", 0, 12));
 		jta.setText(world.toString());
 		
-		radio.add(indexRadio);
-		radio.add(nameRadio);
-		radio.add(parentRadio);
-		
 		JButton searchButton = new JButton("Search");
+		JButton sortButton = new JButton("Sort");
 		JButton reset = new JButton("Reset");
 		
 		searchButton.addActionListener(this);
 		searchButton.setActionCommand("search");
 		
+		sortButton.addActionListener(this);
+		sortButton.setActionCommand("sort");
+		
+		targetList.addActionListener(this);
+		targetList.setActionCommand("target");
+		
 		reset.addActionListener(this);
 		reset.setActionCommand("reset");
 		
 		JPanel userPanel = new JPanel(new GridLayout(3, 1));
-		JPanel searchPanel = new JPanel(new GridLayout(1, 2));
-		JPanel radioPanel = new JPanel(new GridLayout(1, 3));
+		JPanel searchPanel = new JPanel(new GridLayout(1, 4));
+		JPanel sortPanel = new JPanel(new GridLayout(2, 3));
 		
 		userPanel.add(searchPanel);
+		searchPanel.setBorder(new TitledBorder("Search"));
+		searchPanel.add(new JLabel("Type:"));
+		searchPanel.add(searchList);
 		searchPanel.add(searchField);
 		searchPanel.add(searchButton);
 		
-		userPanel.add(radioPanel);
-		radioPanel.add(indexRadio);
-		radioPanel.add(nameRadio);
-		radioPanel.add(parentRadio);
+		targetList.setSelectedItem("Port");
+		
+		userPanel.add(sortPanel);
+		sortPanel.setBorder(new TitledBorder("Sort"));
+		sortPanel.add(new JLabel("Target:"));
+		sortPanel.add(targetList);
+		sortPanel.add(targetField);
+		sortPanel.add(new JLabel("Type:"));
+		sortPanel.add(sortTypes);
 		
 		userPanel.add(reset);
 		
@@ -105,11 +121,11 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("search")) {
 			try {
-				if (indexRadio.isSelected()) {
+				if (searchList.getSelectedItem().equals("Index")) {
 					int index = Integer.parseInt(searchField.getText());
 					jta.setText(world.indexSearch(index).toString());
 				}
-				else if (nameRadio.isSelected()) {
+				else if (searchList.getSelectedItem().equals("Name")) {
 					String name = searchField.getText();
 					String results = "";
 					
@@ -118,7 +134,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 					
 					jta.setText(results);
 				}
-				else if (parentRadio.isSelected()) {
+				else if (searchList.getSelectedItem().equals("Parent")) {
 					int index = Integer.parseInt(searchField.getText());
 					String results = "";
 					
@@ -136,9 +152,28 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, nso.getMessage());
 			}
 		}
-		else if (e.getActionCommand().equals("reset")) {
-			jta.setText(world.toString());
+		else if (e.getActionCommand().equals("sort")) {
+			
 		}
+		else if (e.getActionCommand().equals("target")) {
+			targetField.setEditable(true);
+			sortTypes.removeAllItems();
+			sortTypes.addItem("Name");
+			sortTypes.addItem("Index");
+			
+			if (targetList.getSelectedItem().equals("Port")) {
+				sortTypes.addItem("Length");
+				sortTypes.addItem("Width");
+				sortTypes.addItem("Draft");
+				sortTypes.addItem("Weight");
+			}
+			else if (targetList.getSelectedItem().equals("Ship"))
+				sortTypes.addItem("Skill");
+			else if (targetList.getSelectedItem().equals("World"))
+				targetField.setEditable(false);
+		}
+		else if (e.getActionCommand().equals("reset"))
+			jta.setText(world.toString());
 	}
 
 }
