@@ -9,8 +9,6 @@ package main;
 
 import java.util.*;
 
-import javax.swing.JOptionPane;
-
 public class World extends Thing implements Sorter {
 	private ArrayList<SeaPort> ports;
 	private PortTime time;
@@ -19,65 +17,101 @@ public class World extends Thing implements Sorter {
 		time = new PortTime(0);
 		ports = new ArrayList<SeaPort>();
 		
-		while (sc.hasNextLine()) {
-			process(sc.nextLine());
-		}
+		readFile(sc);
 	}
 	
-	public void process(String str) throws NoSuchObject {
-		Scanner sc = new Scanner(str);
-		if(!sc.hasNext()) {
+	public void readFile(Scanner fsc) throws NoSuchObject {
+		HashMap<Integer, Dock> dockMap = new HashMap<Integer, Dock>();
+		HashMap<Integer, Ship> shipMap = new HashMap<Integer, Ship>();
+		HashMap<Integer, SeaPort> portMap = new HashMap<Integer, SeaPort>();
+		HashMap<Integer, Person> personMap = new HashMap<Integer, Person>();
+		
+		
+		while (fsc.hasNextLine()) {
+			Scanner sc = new Scanner(fsc.nextLine());
+			SeaPort sp;
+			Dock d;
+			Ship s;
+			int parent;
+			
+			if(!sc.hasNext()) {
+				sc.close();
+				continue;
+			}
+			
+			switch(sc.next()) {
+			case "port":
+				sp = new SeaPort(sc);
+				ports.add(sp);
+				portMap.put(sp.getIndex(), sp);
+				break;
+			case "dock":
+				d = new Dock(sc);
+				parent = d.getParent();
+				sp = portMap.get(parent);
+				
+				if (sp != null) {
+					sp.addDock(d);
+					dockMap.put(d.getIndex(), d);
+				}
+				else {
+					throw new NoSuchObject("Port", false, parent);
+				}
+				break;
+			case "pship":
+				s = new PassengerShip(sc);
+				addShip(s, dockMap, portMap);
+				shipMap.put(s.getIndex(), s);
+				break;
+			case "cship":
+				s = new CargoShip(sc);
+				addShip(s, dockMap, portMap);
+				shipMap.put(s.getIndex(), s);
+				break;
+			case "person":
+				Person p = new Person(sc);
+				parent = p.getParent();
+				sp = portMap.get(parent);
+				
+				if (sp != null) {
+					sp.addPerson(p);
+					personMap.put(p.getIndex(), p);
+				}
+				else
+					throw new NoSuchObject("Port", false, parent);
+				break;
+			}
 			sc.close();
-			return;
 		}
-		switch(sc.next()) {
-		case "port": 
-			addPort(new SeaPort(sc));
-			break;
-		case "dock":
-			addDock(new Dock(sc));
-			break;
-		case "pship":
-			addShip(new PassengerShip(sc));
-			break;
-		case "cship":
-			addShip(new CargoShip(sc));
-			break;
-		case "person":
-			addPerson(new Person(sc));
-			break;
-		}
-		sc.close();
 	}
 	
 	public int getTime() {
 		return time.getTime();
 	}
-	
-	public void addPort(SeaPort port) {
-		ports.add(port);
-	}
-	
-	public void addDock(Dock dock) throws NoSuchObject {
-		int index = dock.getParent();
-		
-		getPortByIndex(index).addDock(dock);
-	}
-	
-	public void addShip(Ship ship) throws NoSuchObject {
+
+	public void addShip(Ship ship, HashMap<Integer, Dock> dhm, 
+			HashMap<Integer, SeaPort> phm) throws NoSuchObject {
 		int index = ship.getParent();
+		SeaPort port;
+		Dock dock;
+		
+		port = phm.get(index);
 		
 		try {
-			SeaPort port = getPortByIndex(index);
 			port.addShip(ship);
 			port.queueShip(ship);
 			return;
-		}
-		catch (NoSuchObject nse) {}
+		} catch (NullPointerException npe) {}
 		
-		Dock dock = getDockByIndex(index);
-		dock.addShip(ship);
-		getPortByIndex(dock.getParent()).addShip(ship);
+		dock = dhm.get(index);
+		
+		try {
+			dock.addShip(ship);
+			phm.get(dock.getParent()).addShip(ship);
+			return;
+		} catch (NullPointerException npe){
+			throw new NoSuchObject("Ship", true, index);
+		}
 	}
 	
 	public void addPerson(Person person) throws NoSuchObject {
