@@ -31,6 +31,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	private JComboBox<String> targetList = new JComboBox<String>(sortTargets);
 	
 	private JComboBox<String> sortTypes = new JComboBox<String>();
+	private String sortType;
 	
 	public SeaPortProgram() {
 		JFileChooser chooser = new JFileChooser(".");
@@ -102,6 +103,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		sortPanel.add(targetField);
 		sortPanel.add(new JLabel("Type:"));
 		sortPanel.add(sortTypes);
+		sortPanel.add(sortButton);
 		
 		userPanel.add(reset);
 		
@@ -153,7 +155,48 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 			}
 		}
 		else if (e.getActionCommand().equals("sort")) {
+			String targetString = targetField.getText();
+			String targetType = (String)targetList.getSelectedItem();
+			sortType = (String)sortTypes.getSelectedItem();
 			
+			if (targetType.equals("World")) {
+				generalSort(world);
+				jta.setText(world.toString());
+			}
+			else if (targetType.equals("Port")){
+				try {
+					SeaPort target = world.getPortByName(targetString);
+					
+					generalSort(target);
+					
+					if (sortType.equals("Length")) {
+						target.sortShip(new ShipLengthComparator());
+					}
+					else if (sortType.equals("Width")) {
+						target.sortShip(new ShipWidthComparator());
+					}
+					else if (sortType.equals("Draft")) {
+						target.sortShip(new ShipDraftComparator());
+					}
+					else if (sortType.equals("Weight")) {
+						target.sortShip(new ShipDraftComparator());
+					}
+					
+					jta.setText(target.toString());
+				} catch (NoSuchObject nso) {
+					JOptionPane.showMessageDialog(this, nso.getMessage());
+				}
+			}
+			else if (targetType.equals("Ship")) {
+				try {
+					Ship target = world.getShipByName(targetString);
+					
+					generalSort(target);
+					jta.setText(target.toString());
+				} catch (NoSuchObject nso) {
+					JOptionPane.showMessageDialog(this, nso.getMessage());
+				}
+			}
 		}
 		else if (e.getActionCommand().equals("target")) {
 			targetField.setEditable(true);
@@ -175,5 +218,11 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		else if (e.getActionCommand().equals("reset"))
 			jta.setText(world.toString());
 	}
-
+	
+	private void generalSort(Sorter target) {
+		if (sortType.equals("Name"))
+			target.sort(new NameComparator());
+		else if (sortType.equals("Index"))
+			target.sort(new IndexComparator());
+	}
 }

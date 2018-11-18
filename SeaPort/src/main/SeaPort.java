@@ -66,12 +66,13 @@ public class SeaPort extends Thing implements Sorter {
 
 	@Override
 	public void sort(Comparator<Thing> comparator) {
-		if(comparator instanceof NameComparator) {
-			Collections.sort(queue, comparator);
-			Collections.sort(ships, comparator);
-		}
-		else
-			Collections.sort(queue, comparator);
-		
+		Collections.sort(queue, comparator);
+		Collections.sort(ships, comparator);
+		Collections.sort(docks, comparator);
+		Collections.sort(persons, comparator);
+	}
+	
+	public void sortShip(Comparator<Ship> comparator) {
+		Collections.sort(queue, comparator);
 	}
 }
