@@ -27,7 +27,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	private JComboBox<String> searchList = new JComboBox<String>(searchStrings);
 	
 	private JTextField targetField = new JTextField("");
-	private String[] sortTargets = {"Port", "World", "Ship"};
+	private String[] sortTargets = {"World", "Port", "Ship"};
 	private JComboBox<String> targetList = new JComboBox<String>(sortTargets);
 	
 	private JComboBox<String> sortTypes = new JComboBox<String>();
@@ -94,7 +94,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		searchPanel.add(searchField);
 		searchPanel.add(searchButton);
 		
-		targetList.setSelectedItem("Port");
+		targetList.setSelectedItem("World");
 		
 		userPanel.add(sortPanel);
 		sortPanel.setBorder(new TitledBorder("Sort"));
@@ -184,7 +184,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 					
 					jta.setText(target.toString());
 				} catch (NoSuchObject nso) {
-					JOptionPane.showMessageDialog(this, nso.getMessage());
+					JOptionPane.showMessageDialog(this, "Target not found.");
 				}
 			}
 			else if (targetType.equals("Ship")) {
@@ -194,7 +194,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 					generalSort(target);
 					jta.setText(target.toString());
 				} catch (NoSuchObject nso) {
-					JOptionPane.showMessageDialog(this, nso.getMessage());
+					JOptionPane.showMessageDialog(this, "Target not found.");
 				}
 			}
 		}
