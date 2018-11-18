@@ -1,3 +1,10 @@
+/*
+ * File: ShipWidthComparator.java
+ * Date: 11/14/2018
+ * Author: Nicholas Mills
+ * Purpose: Provide a comparator for sorting ships by width.
+ */
+
 package main;
 
 import java.util.Comparator;
