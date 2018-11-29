@@ -24,7 +24,6 @@ public class World extends Thing implements Sorter {
 		HashMap<Integer, Dock> dockMap = new HashMap<Integer, Dock>();
 		HashMap<Integer, Ship> shipMap = new HashMap<Integer, Ship>();
 		HashMap<Integer, SeaPort> portMap = new HashMap<Integer, SeaPort>();
-		HashMap<Integer, Person> personMap = new HashMap<Integer, Person>();
 		
 		
 		while (fsc.hasNextLine()) {
@@ -75,11 +74,18 @@ public class World extends Thing implements Sorter {
 				
 				if (sp != null) {
 					sp.addPerson(p);
-					personMap.put(p.getIndex(), p);
 				}
 				else
 					throw new NoSuchObject("Port", false, parent);
 				break;
+			case "job":
+				Job j = new Job(sc);
+				parent = j.getParent();
+				s = shipMap.get(parent);
+				
+				if (s != null) {
+					s.addJob(j);
+				}
 			}
 			sc.close();
 		}

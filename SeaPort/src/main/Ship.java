@@ -25,6 +25,10 @@ public class Ship extends Thing implements Sorter {
 		if(sc.hasNextDouble()) draft = sc.nextDouble();
 	}
 	
+	public void addJob(Job job) {
+		jobs.add(job);
+	}
+	
 	public ArrayList<Job> getJobs() {
 		return jobs;
 	}

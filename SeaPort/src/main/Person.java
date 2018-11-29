@@ -11,15 +11,26 @@ import java.util.Scanner;
 
 public class Person extends Thing {
 	private String skill;
+	private boolean busy;
 	
 	public Person(Scanner sc) {
 		super(sc);
 		if(sc.hasNext()) skill = sc.next();
+		
+		busy = false;
 	}
 	
 	public String toString() {
 		String st = "Person: " + super.toString();
 		st += " " + skill;
 		return st;
+	}
+	
+	public boolean isBusy() {
+		return busy;
+	}
+	
+	public void toggleBusy() {
+		busy = !busy;
 	}
 }

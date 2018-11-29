@@ -12,9 +12,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
-public class Job extends Thing implements Sorter {
+public class Job extends Thing implements Sorter, Runnable {
 	private double duration;
 	private ArrayList<String> requirements;
+	private Person worker;
 	
 	public Job(Scanner sc) {
 		super(sc);
@@ -39,5 +40,11 @@ public class Job extends Thing implements Sorter {
 	@Override
 	public void sort(Comparator<Thing> comparator) {
 		Collections.sort(requirements);
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }
