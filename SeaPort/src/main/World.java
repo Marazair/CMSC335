@@ -9,6 +9,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.JPanel;
+
 public class World extends Thing implements Sorter {
 	private ArrayList<SeaPort> ports;
 	private PortTime time;
@@ -370,5 +372,16 @@ public class World extends Thing implements Sorter {
 					mj.sort(comparator);
 			}
 		}
+	}
+	
+	public ArrayList<JPanel> getJobPanels() {
+		ArrayList<JPanel> jobPanels = new ArrayList<JPanel>();
+		
+		for (SeaPort sp:ports) 
+			for (Ship s:sp.getShips()) 
+				for (Job j:s.getJobs())
+					jobPanels.add(j.getPanel());
+		
+		return jobPanels;
 	}
 }

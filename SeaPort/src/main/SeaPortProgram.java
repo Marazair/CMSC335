@@ -21,6 +21,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	
 	private World world;
 	private JTextArea jta = new JTextArea();
+	private JPanel jobPanel = new JPanel(new FlowLayout());
 	
 	private JTextField searchField = new JTextField("");
 	private String[] searchStrings = {"Index", "Name", "Parent"};
@@ -61,8 +62,8 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		}
 		
 		
-		JScrollPane jsp = new JScrollPane(jta);
-		add(jsp, BorderLayout.CENTER);
+		JScrollPane textScroll = new JScrollPane(jta);
+		add(textScroll, BorderLayout.CENTER);
 		
 		jta.setFont (new Font("Monospaced", 0, 12));
 		jta.setText(world.toString());
@@ -108,6 +109,13 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		userPanel.add(reset);
 		
 		add(userPanel, BorderLayout.NORTH);
+		
+		JScrollPane jobScroll = new JScrollPane();
+		add(jobScroll, BorderLayout.EAST);
+		
+		for(JPanel p:world.getJobPanels())
+			jobScroll.add(p);
+			
 		
 		setTitle("Seaport World");
 		setSize(500, 500);

@@ -118,6 +118,10 @@ public class Job extends Thing implements Sorter, Runnable {
 	public void sort(Comparator<Thing> comparator) {
 		Collections.sort(requirements);
 	}
+	
+	public void assignWorker(Person worker) {
+		this.worker = worker;
+	}
 
 	@Override
 	public void run() {
@@ -125,6 +129,12 @@ public class Job extends Thing implements Sorter, Runnable {
 		long startTime = time;
 		double stopTime = time + 1000 * duration;
 		double endTime = stopTime - time;
+		
+		while(worker == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
 		
 		synchronized (worker) {
 			while(worker.isBusy()) {
@@ -159,5 +169,9 @@ public class Job extends Thing implements Sorter, Runnable {
 			worker.toggleBusy();
 			worker.notifyAll();
 		}
+	}
+	
+	public JPanel getPanel() {
+		return panel;
 	}
 }
