@@ -9,6 +9,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Ship extends Thing implements Sorter {
 	private PortTime arrivalTime, docktime;
 	private double draft, length, weight, width;
@@ -76,5 +78,25 @@ public class Ship extends Thing implements Sorter {
 	@Override
 	public void sort(Comparator<Thing> comparator) {
 		Collections.sort(jobs, comparator);
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode dimensionsNode = new DefaultMutableTreeNode("Dimensions");
+		DefaultMutableTreeNode jobsNode = new DefaultMutableTreeNode("Jobs");
+		
+		node.add(dimensionsNode);
+		node.add(jobsNode);
+		
+		dimensionsNode.add(new DefaultMutableTreeNode("Draft: " + draft));
+		dimensionsNode.add(new DefaultMutableTreeNode("Length: " + length));
+		dimensionsNode.add(new DefaultMutableTreeNode("Width: " + width));
+		dimensionsNode.add(new DefaultMutableTreeNode("Weight: " + weight));
+		
+		for(Job j:jobs)
+			jobsNode.add(j.createNode());
+		
+		return node;
 	}
 }

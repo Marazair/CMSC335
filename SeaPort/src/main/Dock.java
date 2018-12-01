@@ -9,6 +9,8 @@ package main;
 
 import java.util.Scanner;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Dock extends Thing {
 	private Ship ship;
 	
@@ -25,6 +27,17 @@ public class Dock extends Thing {
 		if(ship != null)
 			st += "\n    Ship: " + ship;
 		return st;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode shipNode = new DefaultMutableTreeNode("Ship");
+		
+		node.add(shipNode);
+		shipNode.add(ship.createNode());
+		
+		return node;
 	}
 	
 }

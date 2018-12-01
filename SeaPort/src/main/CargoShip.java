@@ -9,6 +9,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class CargoShip extends Ship {
 	
 	private double cargoValue, cargoVolume, cargoWeight;
@@ -47,5 +49,19 @@ public class CargoShip extends Ship {
 
 	public double getCargoWeight() {
 		return cargoWeight;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode cargoNode = new DefaultMutableTreeNode("Cargo Attributes");
+		
+		node.add(cargoNode);
+		
+		cargoNode.add(new DefaultMutableTreeNode("Value: " + cargoValue));
+		cargoNode.add(new DefaultMutableTreeNode("Volume: " + cargoVolume));
+		cargoNode.add(new DefaultMutableTreeNode("Weight: " + cargoWeight));
+		
+		return node;
 	}
 }

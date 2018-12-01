@@ -9,6 +9,8 @@ package main;
 
 import java.util.Scanner;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Person extends Thing {
 	private String skill;
 	private boolean busy;
@@ -32,5 +34,14 @@ public class Person extends Thing {
 	
 	public void toggleBusy() {
 		busy = !busy;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		
+		node.add(new DefaultMutableTreeNode("Skill: " + skill));
+		
+		return node;
 	}
 }

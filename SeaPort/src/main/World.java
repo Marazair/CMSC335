@@ -10,6 +10,7 @@ package main;
 import java.util.*;
 
 import javax.swing.JPanel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class World extends Thing implements Sorter {
 	private ArrayList<SeaPort> ports;
@@ -383,5 +384,15 @@ public class World extends Thing implements Sorter {
 					jobPanels.add(j.getPanel());
 		
 		return jobPanels;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode("World");
+		
+		for(SeaPort sp:ports)
+			node.add(sp.createNode());
+		
+		return node;
 	}
 }

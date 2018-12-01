@@ -12,6 +12,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Job extends Thing implements Sorter, Runnable {
 	private double duration;
@@ -130,10 +131,12 @@ public class Job extends Thing implements Sorter, Runnable {
 		double stopTime = time + 1000 * duration;
 		double endTime = stopTime - time;
 		
-		while(worker == null) {
-			try {
-				wait();
-			} catch (InterruptedException e) {}
+		synchronized(this) {
+			while(worker == null) {
+				try {
+					wait();
+				} catch (InterruptedException e) {}
+			}
 		}
 		
 		synchronized (worker) {
@@ -173,5 +176,19 @@ public class Job extends Thing implements Sorter, Runnable {
 	
 	public JPanel getPanel() {
 		return panel;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode requirementNode = new DefaultMutableTreeNode("Requirements");
+		
+		node.add(new DefaultMutableTreeNode("Duration: " + duration));
+		node.add(requirementNode);
+		
+		for(String r:requirements)
+			requirementNode.add(new DefaultMutableTreeNode(r));
+		
+		return node;
 	}
 }

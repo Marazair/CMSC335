@@ -9,6 +9,8 @@ package main;
 
 import java.util.Scanner;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class Thing implements Comparable<Thing> {
 
 	private int index, parent;
@@ -45,5 +47,11 @@ public class Thing implements Comparable<Thing> {
 	public String toString() {
 		String st = name + " " + index;
 		return st;
+	}
+	
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
+		
+		return node;
 	}
 }

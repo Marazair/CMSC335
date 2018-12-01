@@ -10,18 +10,22 @@ package main;
 
 import java.io.*;
 import java.util.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.tree.*;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class SeaPortProgram extends JFrame implements ActionListener {
+public class SeaPortProgram extends JFrame implements ActionListener, TreeSelectionListener {
 	private static final long serialVersionUID = -3927369720013543277L;
 	
 	private World world;
-	private JTextArea jta = new JTextArea();
-	private JPanel jobPanel = new JPanel(new FlowLayout());
+	
+	private JTree tree;
+	//private JPanel jobPanel = new JPanel(new FlowLayout());
 	
 	private JTextField searchField = new JTextField("");
 	private String[] searchStrings = {"Index", "Name", "Parent"};
@@ -37,8 +41,6 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	public SeaPortProgram() {
 		JFileChooser chooser = new JFileChooser(".");
 		File file = null;
-		StringBuffer nsoMessages = new StringBuffer("");
-		boolean nsoFound = false;
 		
 		int returnVal = chooser.showOpenDialog(this);
 		
@@ -52,21 +54,14 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, file.getName() + "not found.");
 			}
 			catch (NoSuchObject nso) {
-				nsoMessages.append(nso.getMessage() + "\n");
-				nsoFound = true;
-			}
-			
-			if (nsoFound == true) {
-				JOptionPane.showMessageDialog(this, nsoMessages.toString());
+				JOptionPane.showMessageDialog(this, nso.getMessage());
 			}
 		}
 		
+		tree = new JTree(world.createNode());
 		
-		JScrollPane textScroll = new JScrollPane(jta);
+		JScrollPane textScroll = new JScrollPane(tree);
 		add(textScroll, BorderLayout.CENTER);
-		
-		jta.setFont (new Font("Monospaced", 0, 12));
-		jta.setText(world.toString());
 		
 		JButton searchButton = new JButton("Search");
 		JButton sortButton = new JButton("Sort");
@@ -110,14 +105,13 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		
 		add(userPanel, BorderLayout.NORTH);
 		
-		
-		
-		
+		/*
 		for(JPanel p:world.getJobPanels())
 			jobPanel.add(p);
 		
 		JScrollPane jobScroll = new JScrollPane(jobPanel);
 		add(jobScroll, BorderLayout.EAST);
+		*/
 		
 		setTitle("Seaport World");
 		setSize(500, 500);
@@ -131,6 +125,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		/*
 		if (e.getActionCommand().equals("search")) {
 			try {
 				if (searchList.getSelectedItem().equals("Index")) {
@@ -227,6 +222,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		}
 		else if (e.getActionCommand().equals("reset"))
 			jta.setText(world.toString());
+		*/
 	}
 	
 	private void generalSort(Sorter target) {
@@ -234,5 +230,11 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 			target.sort(new NameComparator());
 		else if (sortType.equals("Index"))
 			target.sort(new IndexComparator());
+	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

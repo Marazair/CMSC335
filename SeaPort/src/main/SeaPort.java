@@ -9,6 +9,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class SeaPort extends Thing implements Sorter {
 	
 	private ArrayList<Dock> docks;
@@ -74,5 +76,27 @@ public class SeaPort extends Thing implements Sorter {
 	
 	public void sortShip(Comparator<Ship> comparator) {
 		Collections.sort(queue, comparator);
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode queueNode = new DefaultMutableTreeNode("Queue");
+		DefaultMutableTreeNode docksNode = new DefaultMutableTreeNode("Docks");
+		DefaultMutableTreeNode personsNode = new DefaultMutableTreeNode("Persons");
+		
+		node.add(queueNode);
+		node.add(docksNode);
+		node.add(personsNode);
+		
+		
+		for(Ship s:queue)
+			queueNode.add(s.createNode());
+		for(Dock d:docks)
+			docksNode.add(d.createNode());
+		for(Person p:persons)
+			personsNode.add(p.createNode());
+			
+		return node;
 	}
 }

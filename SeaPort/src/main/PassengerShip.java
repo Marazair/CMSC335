@@ -9,6 +9,8 @@ package main;
 
 import java.util.*;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class PassengerShip extends Ship {
 	
 	private int numberOfOccupiedRooms, numberOfPassengers, numberOfRooms;
@@ -49,5 +51,19 @@ public class PassengerShip extends Ship {
 	public String toString() {
 		String st = "Passenger Ship: " + super.toString();
 		return st;
+	}
+	
+	@Override
+	public DefaultMutableTreeNode createNode() {
+		DefaultMutableTreeNode node = super.createNode();
+		DefaultMutableTreeNode passengerNode = new DefaultMutableTreeNode("Passenger Attributes");
+		
+		node.add(passengerNode);
+		
+		passengerNode.add(new DefaultMutableTreeNode("Rooms: " + numberOfRooms));
+		passengerNode.add(new DefaultMutableTreeNode("Occupied Rooms: " + numberOfOccupiedRooms));
+		passengerNode.add(new DefaultMutableTreeNode("Passengers: " + numberOfPassengers));
+		
+		return node;
 	}
 }
