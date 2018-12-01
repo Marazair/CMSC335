@@ -25,10 +25,11 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 	private World world;
 	
 	private JTree tree;
+	DefaultTreeModel treeModel;
 	//private JPanel jobPanel = new JPanel(new FlowLayout());
 	
 	private JTextField searchField = new JTextField("");
-	private String[] searchStrings = {"Index", "Name", "Parent"};
+	private String[] searchStrings = {"Name", "Parent"};
 	private JComboBox<String> searchList = new JComboBox<String>(searchStrings);
 	
 	private JTextField targetField = new JTextField("");
@@ -59,6 +60,7 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 		}
 		
 		tree = new JTree(world.createNode());
+		treeModel = (DefaultTreeModel) tree.getModel();
 		
 		JScrollPane textScroll = new JScrollPane(tree);
 		add(textScroll, BorderLayout.CENTER);
@@ -125,40 +127,38 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*
+		
 		if (e.getActionCommand().equals("search")) {
+			DefaultMutableTreeNode searchNode = (DefaultMutableTreeNode)treeModel.getRoot();
+			
 			try {
-				if (searchList.getSelectedItem().equals("Index")) {
-					int index = Integer.parseInt(searchField.getText());
-					jta.setText(world.indexSearch(index).toString());
-				}
-				else if (searchList.getSelectedItem().equals("Name")) {
+				if (searchList.getSelectedItem().equals("Name")) {
 					String name = searchField.getText();
-					String results = "";
+					searchNode = new DefaultMutableTreeNode("World");
 					
 					for(Thing mt: world.nameSearch(name))
-						results += mt.toString() + "\n";
+						searchNode.add(mt.createNode());
 					
-					jta.setText(results);
 				}
+				
 				else if (searchList.getSelectedItem().equals("Parent")) {
-					int index = Integer.parseInt(searchField.getText());
-					String results = "";
+					String name = searchField.getText();
+					searchNode = new DefaultMutableTreeNode("World");
 					
-					for(Thing mt: world.parentSearch(index))
-						results += mt.toString() + "\n";
+					for(Thing mt: world.nameSearch(name))
+						searchNode.add(world.indexSearch(mt.getParent()).createNode());
 					
-					jta.setText(results);
 				}
-				else {
-					JOptionPane.showMessageDialog(this, "Please select a search option.");
-				}
+				
+				updateTree(searchNode);
+				
 			} catch (NumberFormatException nfe) {
 				JOptionPane.showMessageDialog(this, "Invalid input. Please use a number.");
 			} catch (NoSuchObject nso) {
 				JOptionPane.showMessageDialog(this, nso.getMessage());
 			}
 		}
+		
 		else if (e.getActionCommand().equals("sort")) {
 			String targetString = targetField.getText();
 			String targetType = (String)targetList.getSelectedItem();
@@ -166,7 +166,7 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 			
 			if (targetType.equals("World")) {
 				generalSort(world);
-				jta.setText(world.toString());
+				updateTree(world.createNode());
 			}
 			else if (targetType.equals("Port")){
 				try {
@@ -187,7 +187,7 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 						target.sortShip(new ShipDraftComparator());
 					}
 					
-					jta.setText(target.toString());
+					updateTree(target.createNode());
 				} catch (NoSuchObject nso) {
 					JOptionPane.showMessageDialog(this, "Target not found.");
 				}
@@ -197,7 +197,7 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 					Ship target = world.getShipByName(targetString);
 					
 					generalSort(target);
-					jta.setText(target.toString());
+					updateTree(target.createNode());
 				} catch (NoSuchObject nso) {
 					JOptionPane.showMessageDialog(this, "Target not found.");
 				}
@@ -220,9 +220,15 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 			else if (targetList.getSelectedItem().equals("World"))
 				targetField.setEditable(false);
 		}
-		else if (e.getActionCommand().equals("reset"))
-			jta.setText(world.toString());
-		*/
+		else if (e.getActionCommand().equals("reset")) {
+			updateTree(world.createNode());
+		}
+		
+	}
+	
+	private void updateTree(DefaultMutableTreeNode node) {
+		treeModel.setRoot(node);
+		treeModel.reload();
 	}
 	
 	private void generalSort(Sorter target) {
