@@ -13,20 +13,19 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class SeaPortProgram extends JFrame implements ActionListener, TreeSelectionListener {
+public class SeaPortProgram extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -3927369720013543277L;
 	
 	private World world;
 	
 	private JTree tree;
-	DefaultTreeModel treeModel;
-	//private JPanel jobPanel = new JPanel(new FlowLayout());
+	private DefaultTreeModel treeModel;
+	private JPanel jobPanel = new JPanel(new FlowLayout());
 	
 	private JTextField searchField = new JTextField("");
 	private String[] searchStrings = {"Name", "Parent"};
@@ -81,11 +80,18 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 		reset.addActionListener(this);
 		reset.setActionCommand("reset");
 		
-		JPanel userPanel = new JPanel(new GridLayout(3, 1));
+		JPanel userPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
 		JPanel searchPanel = new JPanel(new GridLayout(1, 4));
 		JPanel sortPanel = new JPanel(new GridLayout(2, 3));
 		
-		userPanel.add(searchPanel);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		
+		userPanel.add(searchPanel, c);
 		searchPanel.setBorder(new TitledBorder("Search"));
 		searchPanel.add(new JLabel("Type:"));
 		searchPanel.add(searchList);
@@ -94,7 +100,10 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 		
 		targetList.setSelectedItem("World");
 		
-		userPanel.add(sortPanel);
+		c.gridy = 1;
+		c.gridheight = 2;
+		
+		userPanel.add(sortPanel, c);
 		sortPanel.setBorder(new TitledBorder("Sort"));
 		sortPanel.add(new JLabel("Target:"));
 		sortPanel.add(targetList);
@@ -103,17 +112,22 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 		sortPanel.add(sortTypes);
 		sortPanel.add(sortButton);
 		
-		userPanel.add(reset);
+		c.gridy = 3;
+		c.gridheight = 1;
+		
+		userPanel.add(reset, c);
 		
 		add(userPanel, BorderLayout.NORTH);
 		
-		/*
+		jobPanel.setLayout(new BoxLayout(jobPanel, BoxLayout.Y_AXIS));
+		
+		
 		for(JPanel p:world.getJobPanels())
 			jobPanel.add(p);
 		
 		JScrollPane jobScroll = new JScrollPane(jobPanel);
 		add(jobScroll, BorderLayout.EAST);
-		*/
+		
 		
 		setTitle("Seaport World");
 		setSize(500, 500);
@@ -236,11 +250,5 @@ public class SeaPortProgram extends JFrame implements ActionListener, TreeSelect
 			target.sort(new NameComparator());
 		else if (sortType.equals("Index"))
 			target.sort(new IndexComparator());
-	}
-
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -43,19 +43,39 @@ public class Job extends Thing implements Sorter, Runnable {
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
 		
-		panel = new JPanel(new GridLayout(2,3));
+		panel = new JPanel(new GridBagLayout());
 		panel.setBorder(new TitledBorder(getName()));
+		
+		GridBagConstraints c= new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 3;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
 		
 		bar = new JProgressBar();
 		bar.setStringPainted(true);
 		
+		panel.add(bar, c);
+		
+		c.gridy = 1;
+		c.gridwidth = 1;
+		
 		stop = new JButton("Stop");
+		
+		panel.add(stop, c);
+		
+		c.gridx = 1;
+		c.gridy = 1;
+		
 		cancel = new JButton("Cancel");
 		
-		panel.add(bar);
-		panel.add(stop);
-		panel.add(cancel);
-		panel.add(workerLabel);
+		panel.add(cancel, c);
+		
+		c.gridx = 2;
+		c.gridy = 1;
+		
+		panel.add(workerLabel, c);
 		
 		stop.addActionListener (new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -137,6 +157,7 @@ public class Job extends Thing implements Sorter, Runnable {
 					wait();
 				} catch (InterruptedException e) {}
 			}
+			workerLabel.setText("Worker: " + worker.getName());
 		}
 		
 		synchronized (worker) {
@@ -171,6 +192,7 @@ public class Job extends Thing implements Sorter, Runnable {
 		synchronized (worker) {
 			worker.toggleBusy();
 			worker.notifyAll();
+			workerLabel.setText("Worker: N/A");
 		}
 	}
 	
