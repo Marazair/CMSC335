@@ -89,8 +89,9 @@ public class Job extends Thing implements Sorter, Runnable {
 			}
 		});
 
-		
-		new Thread(this).start();
+		Thread thread = new Thread(this);
+		thread.setName(getName());
+		thread.start();
 	}
 	
 	public String toString() {
@@ -128,9 +129,15 @@ public class Job extends Thing implements Sorter, Runnable {
 				break;
 			case DONE:
 				bar.setForeground (Color.blue);
+				bar.setString(bar.getString() + ": COMPLETE");
+				workerLabel.setText("Worker: N/A");
 				break;
 			case CANCELLED:
 				bar.setForeground(Color.red);
+				bar.setString(bar.getString() + ": CANCELLED");
+				workerLabel.setText("Worker: N/A");
+				cancel.setEnabled(false);
+				stop.setEnabled(false);
 				break;
 		}
 	}
@@ -142,6 +149,11 @@ public class Job extends Thing implements Sorter, Runnable {
 	
 	public void assignWorker(Person worker) {
 		this.worker = worker;
+		workerLabel.setText("Worker: " + worker.getName());
+	}
+	
+	public Person getWorker() {
+		return worker;
 	}
 
 	@Override
@@ -175,25 +187,27 @@ public class Job extends Thing implements Sorter, Runnable {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException ie) {}
-			
-			if (goFlag) {
-				showStatus(Status.RUNNING);
-				time += 100;
-				bar.setValue((int)(((time - startTime) / endTime) * 100));
-			}
-			else {
-				showStatus (Status.SUSPENDED);
+			if (!killFlag) {
+				if (goFlag) {
+					showStatus(Status.RUNNING);
+					time += 100;
+					bar.setValue((int)(((time - startTime) / endTime) * 100));
+				}
+				else {
+					showStatus (Status.SUSPENDED);
+				}
 			}
 		}
-		
-		bar.setValue(100);
-		showStatus(Status.DONE);
 		
 		synchronized (worker) {
 			worker.toggleBusy();
 			worker.notifyAll();
-			workerLabel.setText("Worker: N/A");
 		}
+		if (!killFlag) {
+			bar.setValue(100);
+			showStatus(Status.DONE);
+		}
+		
 	}
 	
 	public JPanel getPanel() {

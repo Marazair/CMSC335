@@ -115,7 +115,7 @@ public class World extends Thing implements Sorter {
 		dock = dhm.get(index);
 		
 		try {
-			dock.addShip(ship);
+			dock.assignShip(ship);
 			phm.get(dock.getParent()).addShip(ship);
 			return;
 		} catch (NullPointerException npe){

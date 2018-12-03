@@ -11,6 +11,8 @@ import java.util.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import main.Job.Status;
+
 public class Ship extends Thing implements Sorter {
 	private PortTime arrivalTime, docktime;
 	private double draft, length, weight, width;
@@ -73,6 +75,17 @@ public class Ship extends Thing implements Sorter {
 
 	public double getWidth() {
 		return width;
+	}
+	
+	public boolean jobsComplete() {
+		boolean complete = true;
+		
+		for(Job j:jobs) {
+			if(j.status != Status.CANCELLED && j.status != Status.DONE)
+				complete = false;
+		}
+		
+		return complete;
 	}
 
 	@Override

@@ -11,10 +11,11 @@ import java.util.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class SeaPort extends Thing implements Sorter {
+public class SeaPort extends Thing implements Sorter, Runnable {
 	
+	private LinkedList<Ship> queue;
 	private ArrayList<Dock> docks;
-	private ArrayList<Ship> queue, ships;
+	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
 	
 	public SeaPort(Scanner sc) {
@@ -22,8 +23,10 @@ public class SeaPort extends Thing implements Sorter {
 		
 		docks = new ArrayList<Dock>();
 		ships = new ArrayList<Ship>();
-		queue = new ArrayList<Ship>();
+		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
+		
+		new Thread(this).start();
 	}
 	
 	public void addDock(Dock dock) {
@@ -98,5 +101,43 @@ public class SeaPort extends Thing implements Sorter {
 			personsNode.add(p.createNode());
 			
 		return node;
+	}
+
+	@Override
+	public void run() {
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {}
+		
+		int index = 0;
+		
+		while (!queue.isEmpty()) {
+			for(Dock d:docks) {
+				Ship ship = d.getShip();
+				
+				if (ship == null || ship.jobsComplete()) {
+					ship = queue.pop();
+					d.assignShip(ship);
+				}
+				
+				for (Job j:ship.getJobs()) {
+					Person worker = j.getWorker();
+					if (worker == null) {
+						worker = persons.get(index);
+						index++;
+						
+						synchronized(j) {
+							j.assignWorker(worker);
+							j.notify();
+						}
+						
+						
+						if (index >= persons.size())
+							index = 0;
+					}
+				}
+			}
+		}
 	}
 }

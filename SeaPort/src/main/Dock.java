@@ -18,8 +18,12 @@ public class Dock extends Thing {
 		super(sc);
 	}
 	
-	public void addShip(Ship ship) {
+	public void assignShip(Ship ship) {
 		this.ship = ship;
+	}
+	
+	public Ship getShip() {
+		return ship;
 	}
 	
 	public String toString() {
