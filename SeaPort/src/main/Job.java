@@ -120,9 +120,11 @@ public class Job extends Thing implements Sorter, Runnable {
 		switch (status) {
 			case RUNNING:
 				bar.setForeground(Color.green);
+				stop.setText("Stop");
 				break;
 			case SUSPENDED:
 				bar.setForeground (Color.yellow);
+				stop.setText("Resume");
 				break;
 			case WAITING:
 				bar.setForeground (Color.orange);
