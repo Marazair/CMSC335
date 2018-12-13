@@ -26,7 +26,9 @@ public class SeaPort extends Thing implements Sorter, Runnable {
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
 		
-		new Thread(this).start();
+		Thread thread = new Thread(this);
+		thread.setName(getName());
+		thread.start();
 	}
 	
 	public void addDock(Dock dock) {
