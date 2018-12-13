@@ -11,12 +11,13 @@ import java.util.*;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class SeaPort extends Thing implements Sorter, Runnable {
+public class SeaPort extends Thing implements Sorter {
 	
 	private LinkedList<Ship> queue;
 	private ArrayList<Dock> docks;
 	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
+	private HashMap<String, ArrayList<Person>> skillPools;
 	
 	public SeaPort(Scanner sc) {
 		super(sc);
@@ -25,10 +26,8 @@ public class SeaPort extends Thing implements Sorter, Runnable {
 		ships = new ArrayList<Ship>();
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
+		skillPools = new HashMap<String, ArrayList<Person>>();
 		
-		Thread thread = new Thread(this);
-		thread.setName(getName());
-		thread.start();
 	}
 	
 	public void addDock(Dock dock) {
@@ -40,7 +39,15 @@ public class SeaPort extends Thing implements Sorter, Runnable {
 	}
 	
 	public void addPerson(Person person) {
+		String skill = person.getSkill();
+		
 		persons.add(person);
+		
+		if (!skillPools.containsKey(skill)) {
+			skillPools.put(skill, new ArrayList<Person>());
+		}
+		
+		skillPools.get(skill).add(person);
 	}
 	
 	public void queueShip(Ship ship) {
@@ -104,7 +111,8 @@ public class SeaPort extends Thing implements Sorter, Runnable {
 			
 		return node;
 	}
-
+	
+	/*
 	@Override
 	public void run() {
 		
@@ -142,4 +150,5 @@ public class SeaPort extends Thing implements Sorter, Runnable {
 			}
 		}
 	}
+	*/
 }

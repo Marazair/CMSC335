@@ -36,6 +36,10 @@ public class Person extends Thing {
 		busy = !busy;
 	}
 	
+	public String getSkill() {
+		return skill;
+	}
+	
 	@Override
 	public DefaultMutableTreeNode createNode() {
 		DefaultMutableTreeNode node = super.createNode();
