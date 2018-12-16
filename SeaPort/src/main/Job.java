@@ -24,7 +24,9 @@ public class Job extends Thing implements Sorter, Runnable {
 	private JButton stop;
 	private JButton cancel;
 	private JLabel workerLabel;
-	private Ship parentShip;
+	private Ship ship;
+	private Dock dock;
+	private SeaPort port;
 	private boolean goFlag;
 	private boolean killFlag;
 	Status status = Status.WAITING;
@@ -47,7 +49,7 @@ public class Job extends Thing implements Sorter, Runnable {
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
 		
-		parentShip = World.getShipByIndex(getParent());
+		ship = World.getShipByIndex(getParent());
 		
 		for (String s:requirements) {
 			assignedWorkers.put(s, null);
@@ -186,7 +188,9 @@ public class Job extends Thing implements Sorter, Runnable {
 		double stopTime = time + 1000 * duration;
 		double endTime = stopTime - time;
 		
-		
+		synchronized(ship) {
+			 
+		}
 		
 		
 		int workerCount = 0;
@@ -244,7 +248,7 @@ public class Job extends Thing implements Sorter, Runnable {
 			showStatus(Status.DONE);
 		}
 		
-		if (parentShip.jobsComplete()) {
+		if (ship.jobsComplete()) {
 			
 		}
 		

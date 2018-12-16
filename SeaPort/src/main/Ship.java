@@ -105,10 +105,6 @@ public class Ship extends Thing implements Sorter {
 		return width;
 	}
 	
-	public void dockShip(Dock dock) {
-		
-	}
-	
 	public boolean jobsComplete() {
 		boolean complete = true;
 		
