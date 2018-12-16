@@ -17,22 +17,26 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Job extends Thing implements Sorter, Runnable {
 	private double duration;
 	private ArrayList<String> requirements;
-	private Person worker;
+	private HashMap<String, ArrayList<Person>> workerPool;
+	private HashMap<String, Person> assignedWorkers;
 	private JPanel panel;
 	private JProgressBar bar;
 	private JButton stop;
 	private JButton cancel;
 	private JLabel workerLabel;
+	private Ship parentShip;
 	private boolean goFlag;
 	private boolean killFlag;
 	Status status = Status.WAITING;
 	
 	enum Status {RUNNING, SUSPENDED, WAITING, DONE, CANCELLED};
 	
-	public Job(Scanner sc) {
+	public Job(Scanner sc) throws NoSuchObject {
 		super(sc);
 		
-		worker = null;
+		workerPool = null;
+		assignedWorkers = new HashMap<String, Person>();
+	
 		workerLabel = new JLabel("Worker: Unallocated");
 		
 		goFlag = true;
@@ -42,6 +46,12 @@ public class Job extends Thing implements Sorter, Runnable {
 		
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
+		
+		parentShip = World.getShipByIndex(getParent());
+		
+		for (String s:requirements) {
+			assignedWorkers.put(s, null);
+		}
 		
 		panel = new JPanel(new GridBagLayout());
 		panel.setBorder(new TitledBorder(getName()));
@@ -149,13 +159,24 @@ public class Job extends Thing implements Sorter, Runnable {
 		Collections.sort(requirements);
 	}
 	
-	public void assignWorker(Person worker) {
-		this.worker = worker;
-		workerLabel.setText("Worker: " + worker.getName());
+	public void passPool(HashMap<String, ArrayList<Person>> worker) {
+		this.workerPool = worker;
+		//workerLabel.setText("Worker: " + worker.getName());
 	}
 	
-	public Person getWorker() {
-		return worker;
+	private void releaseWorkers() {
+		for(String s:requirements) {
+			Person worker = assignedWorkers.get(s);
+			ArrayList<Person> list = workerPool.get(s);
+			
+			if (worker != null) {
+				synchronized(list) {
+					list.add(worker);
+					list.notifyAll();
+					assignedWorkers.put(s, null);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -165,25 +186,40 @@ public class Job extends Thing implements Sorter, Runnable {
 		double stopTime = time + 1000 * duration;
 		double endTime = stopTime - time;
 		
-		synchronized(this) {
-			while(worker == null) {
-				try {
-					wait();
-				} catch (InterruptedException e) {}
-			}
-			workerLabel.setText("Worker: " + worker.getName());
-		}
 		
-		synchronized (worker) {
-			while(worker.isBusy()) {
-				showStatus(Status.WAITING);
-				try {
-					worker.wait();
+		
+		
+		int workerCount = 0;
+		
+		while(workerCount < requirements.size()) {
+			for(String s:requirements) {
+				
+				ArrayList<Person> list = workerPool.get(s);
+				
+				if (list != null) {
+					synchronized(list) {
+						if(!list.isEmpty()) {
+							workerCount++;
+							assignedWorkers.put(s, list.get(0));
+							list.remove(0);
+						}
+						else {
+							workerCount = 0;
+							showStatus(Status.WAITING);
+							releaseWorkers();
+							
+							try {
+								list.wait();
+							} catch (InterruptedException e) { }
+						}
+					}
 				}
-				catch (InterruptedException ie) {}
+				else {
+					showStatus(Status.CANCELLED);
+					
+				}
 			}
-			worker.toggleBusy();
-		}
+		} 
 		
 		while (time < stopTime && !killFlag) {
 			try {
@@ -201,13 +237,15 @@ public class Job extends Thing implements Sorter, Runnable {
 			}
 		}
 		
-		synchronized (worker) {
-			worker.toggleBusy();
-			worker.notifyAll();
-		}
+		releaseWorkers();
+		
 		if (!killFlag) {
 			bar.setValue(100);
 			showStatus(Status.DONE);
+		}
+		
+		if (parentShip.jobsComplete()) {
+			
 		}
 		
 	}

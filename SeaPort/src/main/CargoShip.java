@@ -15,7 +15,7 @@ public class CargoShip extends Ship {
 	
 	private double cargoValue, cargoVolume, cargoWeight;
 	
-	public CargoShip(Scanner sc) {
+	public CargoShip(Scanner sc) throws NoSuchObject {
 		super(sc);
 		if(sc.hasNextDouble()) cargoWeight = sc.nextDouble();
 		if(sc.hasNextDouble()) cargoVolume = sc.nextDouble();

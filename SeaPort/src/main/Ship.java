@@ -17,8 +17,11 @@ public class Ship extends Thing implements Sorter {
 	private PortTime arrivalTime, docktime;
 	private double draft, length, weight, width;
 	private ArrayList<Job> jobs;
+	private Dock dock;
+	private SeaPort port;
 	
-	public Ship(Scanner sc) {
+	
+	public Ship(Scanner sc) throws NoSuchObject {
 		super(sc);
 		
 		jobs = new ArrayList<Job>();
@@ -27,6 +30,31 @@ public class Ship extends Thing implements Sorter {
 		if(sc.hasNextDouble()) length = sc.nextDouble();
 		if(sc.hasNextDouble()) width = sc.nextDouble();
 		if(sc.hasNextDouble()) draft = sc.nextDouble();
+		
+		try {
+			dock = World.getDockByIndex(getParent());
+			port = World.getPortByIndex(dock.getParent());
+			notifyAll();
+		} catch (NoSuchObject nse) {
+			port = World.getPortByIndex(getParent());
+		}
+	}
+	
+	public void assignDock(Dock dock) {
+		this.dock = dock;
+		dock.assignShip(this);
+		notifyAll();
+	}
+	
+	public void undock() {
+		Queue<Ship> queue = port.getQueue();
+		
+		synchronized(queue) {
+			if(!queue.isEmpty()) {
+				dock.assignShip(queue.poll());
+			}
+			dock = null;
+		}
 	}
 	
 	public void addJob(Job job) {
@@ -75,6 +103,10 @@ public class Ship extends Thing implements Sorter {
 
 	public double getWidth() {
 		return width;
+	}
+	
+	public void dockShip(Dock dock) {
+		
 	}
 	
 	public boolean jobsComplete() {

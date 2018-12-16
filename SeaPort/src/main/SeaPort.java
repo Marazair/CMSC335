@@ -15,6 +15,7 @@ public class SeaPort extends Thing implements Sorter {
 	
 	private LinkedList<Ship> queue;
 	private ArrayList<Dock> docks;
+	private ArrayList<Dock> occupiedDocks;
 	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
 	private HashMap<String, ArrayList<Person>> skillPools;
@@ -23,6 +24,7 @@ public class SeaPort extends Thing implements Sorter {
 		super(sc);
 		
 		docks = new ArrayList<Dock>();
+		occupiedDocks = new ArrayList<Dock>();
 		ships = new ArrayList<Ship>();
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
@@ -70,12 +72,26 @@ public class SeaPort extends Thing implements Sorter {
 		return ships;
 	}
 	
+	public Queue<Ship> getQueue() {
+		return queue;
+	}
+	
 	public ArrayList<Dock> getDocks() {
 		return docks;
 	}
 	
 	public ArrayList<Person> getPersons() {
 		return persons;
+	}
+	
+	public void dockShip(Ship ship) {
+		synchronized(docks) {
+			if (!docks.isEmpty()) {
+				Dock dock = docks.get(0);
+				docks.remove(dock);
+				occupiedDocks.add(dock);
+			}
+		}
 	}
 
 	@Override

@@ -8,18 +8,19 @@
 package main;
 
 import java.util.Scanner;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Person extends Thing {
 	private String skill;
-	private boolean busy;
+	private ReentrantLock lock;
 	
 	public Person(Scanner sc) {
 		super(sc);
 		if(sc.hasNext()) skill = sc.next();
 		
-		busy = false;
+		lock = new ReentrantLock();
 	}
 	
 	public String toString() {
@@ -28,12 +29,8 @@ public class Person extends Thing {
 		return st;
 	}
 	
-	public boolean isBusy() {
-		return busy;
-	}
-	
-	public void toggleBusy() {
-		busy = !busy;
+	public ReentrantLock getLock() {
+		return lock;
 	}
 	
 	public String getSkill() {

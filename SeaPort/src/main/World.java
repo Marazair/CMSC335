@@ -8,17 +8,20 @@
 package main;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class World extends Thing implements Sorter {
-	private ArrayList<SeaPort> ports;
+	private static ArrayList<SeaPort> ports;
 	private PortTime time;
+	private static ReentrantLock searchLock;
 	
 	public World(Scanner sc) throws NoSuchObject {
 		time = new PortTime(0);
 		ports = new ArrayList<SeaPort>();
+		searchLock = new ReentrantLock();
 		
 		readFile(sc);
 	}
@@ -130,50 +133,71 @@ public class World extends Thing implements Sorter {
 		
 	}
 	
-	public Person getPersonByIndex(int x) throws NoSuchObject {
+	public static Person getPersonByIndex(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Person mp: msp.getPersons())
-				if (mp.getIndex() == x)
+				if (mp.getIndex() == x) {
+					searchLock.unlock();
 					return mp;
+				}
 		throw new NoSuchObject("Person", false, x);
+		
 	}
 	
-	public SeaPort getPortByIndex(int x) throws NoSuchObject {
+	public static SeaPort getPortByIndex(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
-			if (msp.getIndex() == x)
+			if (msp.getIndex() == x) {
+				searchLock.unlock();
 				return msp;
+			}
 		throw new NoSuchObject("Port", false, x);
 	}
 	
-	public Dock getDockByIndex(int x) throws NoSuchObject {
+	public static Dock getDockByIndex(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Dock md: msp.getDocks())
-				if (md.getIndex() == x)
+				if (md.getIndex() == x) {
+					searchLock.unlock();
 					return md;
+				}
 		
 		throw new NoSuchObject("Dock", false, x);
 	}
 	
-	public Ship getShipByIndex(int x) throws NoSuchObject {
+	public static Ship getShipByIndex(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 	         for (Ship ms: msp.getShips())
-	            if (ms.getIndex() == x) 
-	               return ms;
+	            if (ms.getIndex() == x) {
+	            	searchLock.unlock();
+	            	return ms;
+	            }
 			
 		throw new NoSuchObject("Ship", false, x);
 	}
 	
-	public Job getJobByIndex(int x) throws NoSuchObject {
+	public static Job getJobByIndex(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Ship ms: msp.getShips())
 				for (Job mj: ms.getJobs())
-					if (mj.getIndex() == x)
+					if (mj.getIndex() == x) {
+						searchLock.unlock();
 						return mj;
+					}
 		
 		throw new NoSuchObject("Job", false, x);
 	}
 	
-	public Thing indexSearch(int x) throws NoSuchObject {
+	public static Thing indexSearch(int x) throws NoSuchObject {
 		try {
 			return getShipByIndex(x);
 		}
@@ -201,49 +225,70 @@ public class World extends Thing implements Sorter {
 		throw new NoSuchObject("Object", false, x);
 	}
 	
-	public Person getPersonByName(String name) throws NoSuchObject {
+	public static Person getPersonByName(String name) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Person mp: msp.getPersons())
-				if (mp.getName().equals(name))
+				if (mp.getName().equals(name)) {
+					searchLock.unlock();
 					return mp;
+				}
 		throw new NoSuchObject("Person", name);
 	}
 	
-	public SeaPort getPortByName(String name) throws NoSuchObject {
+	public static SeaPort getPortByName(String name) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
-			if (msp.getName().equals(name))
+			if (msp.getName().equals(name)) {
+				searchLock.unlock();
 				return msp;
+			}
 		throw new NoSuchObject("Port", name);
 	}
 	
-	public Dock getDockByName(String name) throws NoSuchObject {
+	public static Dock getDockByName(String name) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Dock md: msp.getDocks())
-				if (md.getName().equals(name))
+				if (md.getName().equals(name)) {
+					searchLock.unlock();
 					return md;
+				}
+					
 		throw new NoSuchObject("Dock", name);
 	}
 	
-	public Ship getShipByName(String name) throws NoSuchObject {
+	public static Ship getShipByName(String name) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 	         for (Ship ms: msp.getShips())
-	            if (ms.getName().equals(name)) 
-	               return ms;
+	            if (ms.getName().equals(name)) { 
+	            	searchLock.unlock();
+	            	return ms;
+	            }
 			
 		throw new NoSuchObject("Ship", name);
 	}
 	
-	public Job getJobByName(String name) throws NoSuchObject {
+	public static Job getJobByName(String name) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Ship ms: msp.getShips())
 				for (Job mj: ms.getJobs())
-					if (mj.getName().equals(name))
+					if (mj.getName().equals(name)) {
+						searchLock.unlock();
 						return mj;
+					}
 		
 		throw new NoSuchObject("Job", name);
 	}
 	
-	public ArrayList<Thing> nameSearch(String name) throws NoSuchObject {
+	public static ArrayList<Thing> nameSearch(String name) throws NoSuchObject {
 		ArrayList<Thing> matches = new ArrayList<Thing>();
 		
 		try {
@@ -276,50 +321,70 @@ public class World extends Thing implements Sorter {
 		throw new NoSuchObject("Object", name);
 	}
 	
-	public Person getPersonByParent(int x) throws NoSuchObject {
+	public static Person getPersonByParent(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Person mp: msp.getPersons())
-				if (mp.getParent() == x)
+				if (mp.getParent() == x) {
+					searchLock.unlock();
 					return mp;
+				}
 		throw new NoSuchObject("Person", true, x);
 	}
 	
-	public SeaPort getPortByParent(int x) throws NoSuchObject {
+	public static SeaPort getPortByParent(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
-			if (msp.getParent() == x)
+			if (msp.getParent() == x) {
+				searchLock.unlock();
 				return msp;
+			}
 		throw new NoSuchObject("Port", true, x);
 	}
 	
-	public Dock getDockByParent(int x) throws NoSuchObject {
+	public static Dock getDockByParent(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Dock md: msp.getDocks())
-				if (md.getParent() == x)
+				if (md.getParent() == x) {
+					searchLock.unlock();
 					return md;
+				}
 		
 		throw new NoSuchObject("Dock", true, x);
 	}
 	
-	public Ship getShipByParent(int x) throws NoSuchObject {
+	public static Ship getShipByParent(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 	         for (Ship ms: msp.getShips())
-	            if (ms.getParent() == x) 
-	               return ms;
+	            if (ms.getParent() == x) {
+	            	searchLock.unlock();
+	            	return ms;
+	            }
 			
 		throw new NoSuchObject("Ship", true, x);
 	}
 	
-	public Job getJobByParent(int x) throws NoSuchObject {
+	public static Job getJobByParent(int x) throws NoSuchObject {
+		searchLock.lock();
+		
 		for (SeaPort msp: ports)
 			for (Ship ms: msp.getShips())
 				for (Job mj: ms.getJobs())
-					if (mj.getParent() == x)
+					if (mj.getParent() == x) {
+						searchLock.unlock();
 						return mj;
+					}
 		
 		throw new NoSuchObject("Job", true, x);
 	}
 	
-	public ArrayList<Thing> parentSearch(int x) throws NoSuchObject {
+	public static ArrayList<Thing> parentSearch(int x) throws NoSuchObject {
 		ArrayList<Thing> matches = new ArrayList<Thing>();
 		
 		try {
@@ -364,6 +429,8 @@ public class World extends Thing implements Sorter {
 
 	@Override
 	public void sort(Comparator<Thing> comparator) {
+		searchLock.lock();
+		
 		Collections.sort(ports, comparator);
 		for(SeaPort msp:ports) {
 			msp.sort(comparator);
@@ -373,6 +440,8 @@ public class World extends Thing implements Sorter {
 					mj.sort(comparator);
 			}
 		}
+		
+		searchLock.unlock();
 	}
 	
 	public ArrayList<JPanel> getJobPanels() {

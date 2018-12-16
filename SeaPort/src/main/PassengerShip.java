@@ -15,7 +15,7 @@ public class PassengerShip extends Ship {
 	
 	private int numberOfOccupiedRooms, numberOfPassengers, numberOfRooms;
 	
-	public PassengerShip(Scanner sc) {
+	public PassengerShip(Scanner sc) throws NoSuchObject {
 		super(sc);
 		if(sc.hasNextInt()) numberOfPassengers = sc.nextInt();
 		if(sc.hasNextInt()) numberOfRooms = sc.nextInt();
