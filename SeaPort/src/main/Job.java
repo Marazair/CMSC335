@@ -25,8 +25,6 @@ public class Job extends Thing implements Sorter, Runnable {
 	private JButton cancel;
 	private JLabel workerLabel;
 	private Ship ship;
-	private Dock dock;
-	private SeaPort port;
 	private boolean goFlag;
 	private boolean killFlag;
 	Status status = Status.WAITING;
@@ -100,10 +98,6 @@ public class Job extends Thing implements Sorter, Runnable {
 				setKillFlag();
 			}
 		});
-
-		Thread thread = new Thread(this);
-		thread.setName(getName());
-		thread.start();
 	}
 	
 	public String toString() {
@@ -161,14 +155,22 @@ public class Job extends Thing implements Sorter, Runnable {
 		Collections.sort(requirements);
 	}
 	
-	public void passPool(HashMap<String, ArrayList<Person>> worker) {
-		this.workerPool = worker;
+	public void passPool(HashMap<String, ArrayList<Person>> workers) {
+		workerPool = workers;
 		//workerLabel.setText("Worker: " + worker.getName());
 	}
 	
+	public void startThread() {
+		Thread thread = new Thread(this);
+		thread.setName(getName());
+		thread.start();
+	}
+	
 	private void releaseWorkers() {
-		for(String s:requirements) {
-			Person worker = assignedWorkers.get(s);
+		for(Map.Entry<String, Person> entry : assignedWorkers.entrySet()) {
+			String s = entry.getKey();
+			Person worker = entry.getValue();
+			
 			ArrayList<Person> list = workerPool.get(s);
 			
 			if (worker != null) {
@@ -189,12 +191,16 @@ public class Job extends Thing implements Sorter, Runnable {
 		double endTime = stopTime - time;
 		
 		synchronized(ship) {
-			 
+			if (ship.getDock() == null) {
+				try {
+					ship.wait();
+				} catch (InterruptedException e) {}
+			}
 		}
-		
 		
 		int workerCount = 0;
 		
+		outerloop:
 		while(workerCount < requirements.size()) {
 			for(String s:requirements) {
 				
@@ -219,8 +225,8 @@ public class Job extends Thing implements Sorter, Runnable {
 					}
 				}
 				else {
-					showStatus(Status.CANCELLED);
-					
+					setKillFlag();
+					break outerloop;
 				}
 			}
 		} 
@@ -248,8 +254,10 @@ public class Job extends Thing implements Sorter, Runnable {
 			showStatus(Status.DONE);
 		}
 		
-		if (ship.jobsComplete()) {
-			
+		synchronized(ship) {
+			if(ship.jobsComplete()) {
+				ship.undock();
+			}
 		}
 		
 	}

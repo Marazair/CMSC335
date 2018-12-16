@@ -34,27 +34,23 @@ public class Ship extends Thing implements Sorter {
 		try {
 			dock = World.getDockByIndex(getParent());
 			port = World.getPortByIndex(dock.getParent());
-			notifyAll();
+			port.getAvailableDocks().remove(dock);
 		} catch (NoSuchObject nse) {
 			port = World.getPortByIndex(getParent());
 		}
 	}
 	
-	public void assignDock(Dock dock) {
-		this.dock = dock;
-		dock.assignShip(this);
-		notifyAll();
+	public void undock() {
+		if (dock != null)
+			port.undockShip(this);
 	}
 	
-	public void undock() {
-		Queue<Ship> queue = port.getQueue();
-		
-		synchronized(queue) {
-			if(!queue.isEmpty()) {
-				dock.assignShip(queue.poll());
-			}
-			dock = null;
-		}
+	public Dock getDock() {
+		return dock;
+	}
+	
+	public void assignDock(Dock dock) {
+		this.dock = dock;
 	}
 	
 	public void addJob(Job job) {

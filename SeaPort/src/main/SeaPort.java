@@ -15,7 +15,7 @@ public class SeaPort extends Thing implements Sorter {
 	
 	private LinkedList<Ship> queue;
 	private ArrayList<Dock> docks;
-	private ArrayList<Dock> occupiedDocks;
+	private ArrayList<Dock> availableDocks;
 	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
 	private HashMap<String, ArrayList<Person>> skillPools;
@@ -24,16 +24,18 @@ public class SeaPort extends Thing implements Sorter {
 		super(sc);
 		
 		docks = new ArrayList<Dock>();
-		occupiedDocks = new ArrayList<Dock>();
+		availableDocks = new ArrayList<Dock>();
 		ships = new ArrayList<Ship>();
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
 		skillPools = new HashMap<String, ArrayList<Person>>();
 		
+		
 	}
 	
 	public void addDock(Dock dock) {
 		docks.add(dock);
+		availableDocks.add(dock);
 	}
 	
 	public void addShip(Ship ship) {
@@ -80,16 +82,67 @@ public class SeaPort extends Thing implements Sorter {
 		return docks;
 	}
 	
+	public ArrayList<Dock> getAvailableDocks() {
+		return availableDocks;
+	}
+	
 	public ArrayList<Person> getPersons() {
 		return persons;
 	}
 	
+	public HashMap<String, ArrayList<Person>> getPools() {
+		return skillPools;
+	}
+	
+	public void fillDocks() {
+		for(Dock d:docks) {
+			Ship s = d.getShip();
+			if (s.jobsComplete())
+				undockShip(s);
+		}
+		
+		while(!availableDocks.isEmpty() && !queue.isEmpty()) {
+			dockShip(queue.poll());
+		}
+	}
+	
 	public void dockShip(Ship ship) {
-		synchronized(docks) {
-			if (!docks.isEmpty()) {
-				Dock dock = docks.get(0);
-				docks.remove(dock);
-				occupiedDocks.add(dock);
+		Dock dock;
+		synchronized(availableDocks) {
+			if(availableDocks.isEmpty()) {
+				try {
+					availableDocks.wait();
+				} catch (InterruptedException e) {}
+			}
+			dock = availableDocks.get(0);
+			availableDocks.remove(dock);
+		}
+		
+		ship.assignDock(dock);
+		dock.assignShip(ship);
+		ship.notifyAll();
+	}
+	
+	public void undockShip(Ship ship) {
+		Dock dock = ship.getDock();
+		
+		ship.assignDock(null);
+		
+		synchronized(queue) {
+			if(!queue.isEmpty()) {
+				Ship newShip = queue.poll();
+				
+				synchronized(newShip) {
+					dock.assignShip(newShip);
+					newShip.notifyAll();
+				}
+			}
+			else {
+				synchronized(availableDocks) {
+					dock.assignShip(null);
+					availableDocks.add(dock);
+					availableDocks.notifyAll();
+				}
 			}
 		}
 	}

@@ -150,7 +150,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 					String name = searchField.getText();
 					searchNode = new DefaultMutableTreeNode("World");
 					
-					for(Thing mt: world.nameSearch(name))
+					for(Thing mt: World.nameSearch(name))
 						searchNode.add(mt.createNode());
 					
 				}
@@ -159,8 +159,8 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 					String name = searchField.getText();
 					searchNode = new DefaultMutableTreeNode("World");
 					
-					for(Thing mt: world.nameSearch(name))
-						searchNode.add(world.indexSearch(mt.getParent()).createNode());
+					for(Thing mt: World.nameSearch(name))
+						searchNode.add(World.indexSearch(mt.getParent()).createNode());
 					
 				}
 				
@@ -184,7 +184,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 			}
 			else if (targetType.equals("Port")){
 				try {
-					SeaPort target = world.getPortByName(targetString);
+					SeaPort target = World.getPortByName(targetString);
 					
 					generalSort(target);
 					
@@ -208,7 +208,7 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 			}
 			else if (targetType.equals("Ship")) {
 				try {
-					Ship target = world.getShipByName(targetString);
+					Ship target = World.getShipByName(targetString);
 					
 					generalSort(target);
 					updateTree(target.createNode());

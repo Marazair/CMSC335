@@ -14,23 +14,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Person extends Thing {
 	private String skill;
-	private ReentrantLock lock;
 	
 	public Person(Scanner sc) {
 		super(sc);
 		if(sc.hasNext()) skill = sc.next();
-		
-		lock = new ReentrantLock();
 	}
 	
 	public String toString() {
 		String st = "Person: " + super.toString();
 		st += " " + skill;
 		return st;
-	}
-	
-	public ReentrantLock getLock() {
-		return lock;
 	}
 	
 	public String getSkill() {

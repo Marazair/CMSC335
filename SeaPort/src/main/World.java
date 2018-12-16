@@ -24,6 +24,15 @@ public class World extends Thing implements Sorter {
 		searchLock = new ReentrantLock();
 		
 		readFile(sc);
+		
+		for (SeaPort sp:ports) {
+			sp.fillDocks();
+			for (Ship s:sp.getShips())
+				for (Job j:s.getJobs()) {
+					j.passPool(sp.getPools());
+					j.startThread();
+				}
+		}
 	}
 	
 	public void readFile(Scanner fsc) throws NoSuchObject {
@@ -457,11 +466,13 @@ public class World extends Thing implements Sorter {
 	
 	@Override
 	public DefaultMutableTreeNode createNode() {
+		searchLock.lock();
 		DefaultMutableTreeNode node = new DefaultMutableTreeNode("World");
 		
 		for(SeaPort sp:ports)
 			node.add(sp.createNode());
 		
+		searchLock.unlock();
 		return node;
 	}
 }
