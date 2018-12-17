@@ -130,7 +130,16 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		JScrollPane jobScroll = new JScrollPane(jobPanel);
 		add(jobScroll, BorderLayout.EAST);
 		
+		c.gridx = 0;
+		c.gridy = 0;
 		
+		for(JPanel p:world.getPortPanels())  {
+			poolPanel.add(p, c);
+			c.gridy++;
+		}
+		
+		JScrollPane poolScroll = new JScrollPane(poolPanel);
+		add(poolScroll, BorderLayout.CENTER);
 		
 		setTitle("Seaport World");
 		setSize(1000, 600);

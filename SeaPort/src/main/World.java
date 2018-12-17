@@ -29,6 +29,7 @@ public class World extends Thing implements Sorter {
 			sp.checkAvailable();
 			sp.fillDocks();
 			sp.count();
+			sp.createPanel();
 			
 			for (Ship s:sp.getShips())
 				for (Job j:s.getJobs()) 
@@ -471,14 +472,14 @@ public class World extends Thing implements Sorter {
 		return jobPanels;
 	}
 	
-	/*public ArrayList<JPanel> getPortPanels() {
+	public ArrayList<JPanel> getPortPanels() {
 		ArrayList<JPanel> portPanels = new ArrayList<JPanel>();
 		
 		for (SeaPort sp:ports) 
 			portPanels.add(sp.getPanel());
 		
 		return portPanels;
-	}*/
+	}
 	
 	@Override
 	public DefaultMutableTreeNode createNode() {

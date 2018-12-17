@@ -7,6 +7,7 @@
 
 package main;
 
+import java.awt.Dimension;
 import java.util.*;
 
 import javax.swing.*;
@@ -36,6 +37,7 @@ public class SeaPort extends Thing implements Sorter {
 		
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(getName()));
+		panel.setPreferredSize(new Dimension(200,200));
 		
 		skillCount = new HashMap<String, Integer>();
 		
@@ -74,7 +76,12 @@ public class SeaPort extends Thing implements Sorter {
 	}
 	
 	public void createPanel() {
-		
+		synchronized(skillPools) {
+			for(Map.Entry<String, ArrayList<Person>> entry : skillPools.entrySet()) {
+				
+				panel.add(new JLabel(entry.getKey() + ": " + entry.getValue().size()));
+			}
+		}
 	}
 	
 	public void queueShip(Ship ship) {
@@ -218,5 +225,9 @@ public class SeaPort extends Thing implements Sorter {
 			personsNode.add(p.createNode());
 			
 		return node;
+	}
+
+	public JPanel getPanel() {
+		return panel;
 	}
 }
