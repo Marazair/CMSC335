@@ -49,6 +49,10 @@ public class Ship extends Thing implements Sorter {
 		return dock;
 	}
 	
+	public SeaPort getPort() {
+		return port;
+	}
+	
 	public void assignDock(Dock dock) {
 		this.dock = dock;
 	}

@@ -14,16 +14,22 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Job extends Thing implements Sorter, Runnable {
+public class Job extends Thing implements Sorter, Runnable {	
 	private double duration;
 	private ArrayList<String> requirements;
+	private HashMap<String, Integer> skillCount;
 	private HashMap<String, ArrayList<Person>> workerPool;
 	private HashMap<String, Person> assignedWorkers;
 	private JPanel panel;
+	private JPanel workerPanel;
+	private DefaultListModel<String> assigned;
+	private DefaultListModel<String> missing;
+	private JPanel assignedPanel;
+	private JPanel missingPanel;
+	private GridBagConstraints c= new GridBagConstraints();
 	private JProgressBar bar;
 	private JButton stop;
 	private JButton cancel;
-	private JLabel workerLabel;
 	private Ship ship;
 	private boolean goFlag;
 	private boolean killFlag;
@@ -33,11 +39,10 @@ public class Job extends Thing implements Sorter, Runnable {
 	
 	public Job(Scanner sc) throws NoSuchObject {
 		super(sc);
-		
 		workerPool = null;
 		assignedWorkers = new HashMap<String, Person>();
 	
-		workerLabel = new JLabel("Worker: Unallocated");
+		workerPanel = new JPanel(new GridLayout(1, 2));
 		
 		goFlag = true;
 		killFlag = false;
@@ -47,16 +52,31 @@ public class Job extends Thing implements Sorter, Runnable {
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
 		
+		skillCount = new HashMap<String, Integer>();
+		
+		for (String s:requirements) {
+			if (skillCount.containsKey(s)) {
+				int count;
+				count = skillCount.get(s);
+				skillCount.put(s, count + 1);
+			}
+			else {
+				skillCount.put(s, 1);
+			}
+		}
+		
 		ship = World.getShipByIndex(getParent());
 		
 		for (String s:requirements) {
 			assignedWorkers.put(s, null);
 		}
 		
+		Collections.sort(requirements);
+		
 		panel = new JPanel(new GridBagLayout());
 		panel.setBorder(new TitledBorder(getName()));
 		
-		GridBagConstraints c= new GridBagConstraints();
+		
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 3;
@@ -82,10 +102,35 @@ public class Job extends Thing implements Sorter, Runnable {
 		
 		panel.add(cancel, c);
 		
-		c.gridx = 2;
-		c.gridy = 1;
+		c.gridwidth = 2;
+		c.gridx = 0;
+		c.gridy = 2;
 		
-		panel.add(workerLabel, c);
+		panel.add(workerPanel, c);
+		
+		assignedPanel = new JPanel();
+		assignedPanel.setBorder(new TitledBorder("Assigned"));
+		
+		assigned = new DefaultListModel<String>();
+		JList<String> assignedList = new JList<String>(assigned);
+		
+		assignedPanel.add(assignedList);
+		
+		missingPanel = new JPanel();
+		missingPanel.setBorder(new TitledBorder("Missing"));
+		
+		missing = new DefaultListModel<String>();
+		JList<String> missingList = new JList<String>(missing);
+		
+		missingPanel.add(missingList);
+		
+		workerPanel.add(assignedPanel);
+		workerPanel.add(missingPanel);
+		
+		for(Map.Entry<String, Person> entry : assignedWorkers.entrySet()) {
+			String s = entry.getKey();
+			missing.addElement(s);
+		}
 		
 		stop.addActionListener (new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -138,12 +183,10 @@ public class Job extends Thing implements Sorter, Runnable {
 			case DONE:
 				bar.setForeground (Color.blue);
 				bar.setString(bar.getString() + ": COMPLETE");
-				workerLabel.setText("Worker: N/A");
 				break;
 			case CANCELLED:
 				bar.setForeground(Color.red);
 				bar.setString(bar.getString() + ": CANCELLED");
-				workerLabel.setText("Worker: N/A");
 				cancel.setEnabled(false);
 				stop.setEnabled(false);
 				break;
@@ -157,7 +200,6 @@ public class Job extends Thing implements Sorter, Runnable {
 	
 	public void passPool(HashMap<String, ArrayList<Person>> workers) {
 		workerPool = workers;
-		//workerLabel.setText("Worker: " + worker.getName());
 	}
 	
 	public void startThread() {
@@ -170,8 +212,9 @@ public class Job extends Thing implements Sorter, Runnable {
 		for(Map.Entry<String, Person> entry : assignedWorkers.entrySet()) {
 			String s = entry.getKey();
 			Person worker = entry.getValue();
+			ArrayList<Person> list;
 			
-			ArrayList<Person> list = workerPool.get(s);
+			list = workerPool.get(s);
 			
 			if (worker != null) {
 				synchronized(list) {
@@ -189,28 +232,40 @@ public class Job extends Thing implements Sorter, Runnable {
 		long startTime = time;
 		double stopTime = time + 1000 * duration;
 		double endTime = stopTime - time;
+		boolean undocked;
 		
-		synchronized(ship) {
-			if (ship.getDock() == null) {
-				try {
-					ship.wait();
-				} catch (InterruptedException e) {}
+		do {
+			synchronized(ship) {
+				undocked = (ship.getDock() == null);
+				if (undocked) {
+					try {
+						ship.wait();
+					} catch (InterruptedException e) {}
+				}
 			}
-		}
+		} while(undocked);
 		
 		int workerCount = 0;
+		
+		ship.getPort().;
 		
 		outerloop:
 		while(workerCount < requirements.size()) {
 			for(String s:requirements) {
+				ArrayList<Person> list;
 				
-				ArrayList<Person> list = workerPool.get(s);
+				list = workerPool.get(s);
 				
 				if (list != null) {
 					synchronized(list) {
 						if(!list.isEmpty()) {
 							workerCount++;
 							assignedWorkers.put(s, list.get(0));
+							if (!assigned.contains(s))
+								assigned.addElement(s);
+							
+							missing.removeElement(s);
+							
 							list.remove(0);
 						}
 						else {
@@ -221,11 +276,22 @@ public class Job extends Thing implements Sorter, Runnable {
 							try {
 								list.wait();
 							} catch (InterruptedException e) { }
+							
+							break;
 						}
 					}
 				}
 				else {
 					setKillFlag();
+					panel.remove(workerPanel);
+					
+					JLabel insufficientWorkers = 
+							new JLabel("<html>Unable to complete job "
+							+ "<br>due to insufficient workers<br>of type " + s);
+					
+					insufficientWorkers.setHorizontalAlignment(JLabel.CENTER);
+					
+					panel.add(insufficientWorkers, c);
 					break outerloop;
 				}
 			}
@@ -233,7 +299,7 @@ public class Job extends Thing implements Sorter, Runnable {
 		
 		while (time < stopTime && !killFlag) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1);
 			} catch (InterruptedException ie) {}
 			if (!killFlag) {
 				if (goFlag) {

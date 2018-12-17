@@ -9,6 +9,7 @@ package main;
 
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class SeaPort extends Thing implements Sorter {
@@ -19,6 +20,8 @@ public class SeaPort extends Thing implements Sorter {
 	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
 	private HashMap<String, ArrayList<Person>> skillPools;
+	private HashMap<String, ArrayList<Person>> skillCount;
+	private JPanel panel;
 	
 	public SeaPort(Scanner sc) {
 		super(sc);
@@ -29,13 +32,12 @@ public class SeaPort extends Thing implements Sorter {
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
 		skillPools = new HashMap<String, ArrayList<Person>>();
-		
+		panel = new JPanel();
 		
 	}
 	
 	public void addDock(Dock dock) {
 		docks.add(dock);
-		availableDocks.add(dock);
 	}
 	
 	public void addShip(Ship ship) {
@@ -49,9 +51,11 @@ public class SeaPort extends Thing implements Sorter {
 		
 		if (!skillPools.containsKey(skill)) {
 			skillPools.put(skill, new ArrayList<Person>());
+			skillCount.put(skill, new ArrayList<Person>());
 		}
 		
 		skillPools.get(skill).add(person);
+		skillCount.get(skill).add(person);
 	}
 	
 	public void queueShip(Ship ship) {
@@ -76,6 +80,10 @@ public class SeaPort extends Thing implements Sorter {
 	
 	public Queue<Ship> getQueue() {
 		return queue;
+	}
+	
+	public HashMap<String, ArrayList<Person>> getSkillCount() {
+		return skillCount;
 	}
 	
 	public ArrayList<Dock> getDocks() {
@@ -108,19 +116,26 @@ public class SeaPort extends Thing implements Sorter {
 	
 	public void dockShip(Ship ship) {
 		Dock dock;
-		synchronized(availableDocks) {
-			if(availableDocks.isEmpty()) {
-				try {
-					availableDocks.wait();
-				} catch (InterruptedException e) {}
-			}
-			dock = availableDocks.get(0);
-			availableDocks.remove(dock);
-		}
+		boolean noDocks;
 		
-		ship.assignDock(dock);
-		dock.assignShip(ship);
-		ship.notifyAll();
+		do {
+			synchronized(availableDocks) {
+				noDocks = availableDocks.isEmpty();
+				if(availableDocks.isEmpty()) {
+					try {
+						availableDocks.wait();
+					} catch (InterruptedException e) {}
+				}
+				dock = availableDocks.get(0);
+				availableDocks.remove(dock);
+			}
+		} while(noDocks);
+		
+		synchronized(ship) {
+			ship.assignDock(dock);
+			dock.assignShip(ship);
+			ship.notifyAll();
+		}
 	}
 	
 	public void undockShip(Ship ship) {
@@ -134,6 +149,7 @@ public class SeaPort extends Thing implements Sorter {
 				
 				synchronized(newShip) {
 					dock.assignShip(newShip);
+					newShip.assignDock(dock);
 					newShip.notifyAll();
 				}
 			}
@@ -144,6 +160,14 @@ public class SeaPort extends Thing implements Sorter {
 					availableDocks.notifyAll();
 				}
 			}
+		}
+	}
+	
+	public void checkAvailable() {
+		for (Dock d:docks) {
+			if (d.getShip() == null)
+				if (!availableDocks.contains(d))
+					availableDocks.add(d);
 		}
 	}
 
@@ -180,44 +204,4 @@ public class SeaPort extends Thing implements Sorter {
 			
 		return node;
 	}
-	
-	/*
-	@Override
-	public void run() {
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {}
-		
-		int index = 0;
-		
-		while (!queue.isEmpty()) {
-			for(Dock d:docks) {
-				Ship ship = d.getShip();
-				
-				if (ship == null || ship.jobsComplete()) {
-					ship = queue.pop();
-					d.assignShip(ship);
-				}
-				
-				for (Job j:ship.getJobs()) {
-					Person worker = j.getWorker();
-					if (worker == null) {
-						worker = persons.get(index);
-						index++;
-						
-						synchronized(j) {
-							j.assignWorker(worker);
-							j.notify();
-						}
-						
-						
-						if (index >= persons.size())
-							index = 0;
-					}
-				}
-			}
-		}
-	}
-	*/
 }

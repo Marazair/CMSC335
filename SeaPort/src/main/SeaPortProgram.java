@@ -25,7 +25,8 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 	
 	private JTree tree;
 	private DefaultTreeModel treeModel;
-	private JPanel jobPanel = new JPanel(new FlowLayout());
+	private JPanel jobPanel = new JPanel();
+	private JPanel poolPanel = new JPanel(new GridBagLayout());
 	
 	private JTextField searchField = new JTextField("");
 	private String[] searchStrings = {"Name", "Parent"};
@@ -62,7 +63,8 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		treeModel = (DefaultTreeModel) tree.getModel();
 		
 		JScrollPane textScroll = new JScrollPane(tree);
-		add(textScroll, BorderLayout.CENTER);
+		textScroll.setPreferredSize(new Dimension(300, 1000));
+		add(textScroll, BorderLayout.WEST);
 		
 		JButton searchButton = new JButton("Search");
 		JButton sortButton = new JButton("Sort");
@@ -129,8 +131,9 @@ public class SeaPortProgram extends JFrame implements ActionListener {
 		add(jobScroll, BorderLayout.EAST);
 		
 		
+		
 		setTitle("Seaport World");
-		setSize(500, 500);
+		setSize(1000, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
