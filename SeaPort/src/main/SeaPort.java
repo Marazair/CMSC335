@@ -10,6 +10,7 @@ package main;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class SeaPort extends Thing implements Sorter {
@@ -20,7 +21,7 @@ public class SeaPort extends Thing implements Sorter {
 	private ArrayList<Ship> ships;
 	private ArrayList<Person> persons;
 	private HashMap<String, ArrayList<Person>> skillPools;
-	private HashMap<String, ArrayList<Person>> skillCount;
+	private HashMap<String, Integer> skillCount;
 	private JPanel panel;
 	
 	public SeaPort(Scanner sc) {
@@ -32,7 +33,11 @@ public class SeaPort extends Thing implements Sorter {
 		queue = new LinkedList<Ship>();
 		persons = new ArrayList<Person>();
 		skillPools = new HashMap<String, ArrayList<Person>>();
+		
 		panel = new JPanel();
+		panel.setBorder(new TitledBorder(getName()));
+		
+		skillCount = new HashMap<String, Integer>();
 		
 	}
 	
@@ -51,11 +56,25 @@ public class SeaPort extends Thing implements Sorter {
 		
 		if (!skillPools.containsKey(skill)) {
 			skillPools.put(skill, new ArrayList<Person>());
-			skillCount.put(skill, new ArrayList<Person>());
 		}
 		
 		skillPools.get(skill).add(person);
-		skillCount.get(skill).add(person);
+	}
+	
+	public void count() {
+		for (Map.Entry<String, ArrayList<Person>> entry : skillPools.entrySet()) {
+			String s = entry.getKey();
+			
+			skillCount.put(s, entry.getValue().size());
+		}
+	}
+	
+	public HashMap<String, Integer> getCount() {
+		return skillCount;
+	}
+	
+	public void createPanel() {
+		
 	}
 	
 	public void queueShip(Ship ship) {
@@ -80,10 +99,6 @@ public class SeaPort extends Thing implements Sorter {
 	
 	public Queue<Ship> getQueue() {
 		return queue;
-	}
-	
-	public HashMap<String, ArrayList<Person>> getSkillCount() {
-		return skillCount;
 	}
 	
 	public ArrayList<Dock> getDocks() {

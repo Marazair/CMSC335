@@ -28,6 +28,7 @@ public class World extends Thing implements Sorter {
 		for (SeaPort sp:ports) {
 			sp.checkAvailable();
 			sp.fillDocks();
+			sp.count();
 			
 			for (Ship s:sp.getShips())
 				for (Job j:s.getJobs()) 

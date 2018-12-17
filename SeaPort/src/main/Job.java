@@ -17,9 +17,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Job extends Thing implements Sorter, Runnable {	
 	private double duration;
 	private ArrayList<String> requirements;
-	private HashMap<String, Integer> skillCount;
 	private HashMap<String, ArrayList<Person>> workerPool;
 	private HashMap<String, Person> assignedWorkers;
+	private HashMap<String, Integer> skillCount;
 	private JPanel panel;
 	private JPanel workerPanel;
 	private DefaultListModel<String> assigned;
@@ -48,27 +48,25 @@ public class Job extends Thing implements Sorter, Runnable {
 		killFlag = false;
 		
 		requirements = new ArrayList<String>();
+		skillCount = new HashMap<String, Integer>();
 		
 		if(sc.hasNextDouble()) duration = sc.nextDouble();
 		while(sc.hasNext()) requirements.add(sc.next());
-		
-		skillCount = new HashMap<String, Integer>();
-		
-		for (String s:requirements) {
-			if (skillCount.containsKey(s)) {
-				int count;
-				count = skillCount.get(s);
-				skillCount.put(s, count + 1);
-			}
-			else {
-				skillCount.put(s, 1);
-			}
-		}
 		
 		ship = World.getShipByIndex(getParent());
 		
 		for (String s:requirements) {
 			assignedWorkers.put(s, null);
+		}
+		
+		for (String s:requirements) {
+			if (skillCount.containsKey(s)) {
+				int count = skillCount.get(s);
+				skillCount.put(s, count + 1);
+			}
+			else {
+				skillCount.put(s, 1);
+			}
 		}
 		
 		Collections.sort(requirements);
@@ -246,17 +244,30 @@ public class Job extends Thing implements Sorter, Runnable {
 		} while(undocked);
 		
 		int workerCount = 0;
+		boolean enoughWorkers = true;
+		HashMap<String, Integer> portCount = ship.getPort().getCount();
 		
-		ship.getPort().;
+		for(Map.Entry<String, Integer> entry : skillCount.entrySet()) {
+			String s = entry.getKey();
+			int i = entry.getValue();
+			
+			
+			if (!portCount.containsKey(s)) {
+				enoughWorkers = false;
+			}
+			else if (i > portCount.get(s)) {
+				enoughWorkers = false;
+			}
+			
+		}
 		
-		outerloop:
-		while(workerCount < requirements.size()) {
-			for(String s:requirements) {
-				ArrayList<Person> list;
-				
-				list = workerPool.get(s);
-				
-				if (list != null) {
+		if (enoughWorkers) {
+			while(workerCount < requirements.size()) {
+				for(String s:requirements) {
+					ArrayList<Person> list;
+					
+					list = workerPool.get(s);
+					
 					synchronized(list) {
 						if(!list.isEmpty()) {
 							workerCount++;
@@ -281,43 +292,42 @@ public class Job extends Thing implements Sorter, Runnable {
 						}
 					}
 				}
-				else {
-					setKillFlag();
-					panel.remove(workerPanel);
-					
-					JLabel insufficientWorkers = 
-							new JLabel("<html>Unable to complete job "
-							+ "<br>due to insufficient workers<br>of type " + s);
-					
-					insufficientWorkers.setHorizontalAlignment(JLabel.CENTER);
-					
-					panel.add(insufficientWorkers, c);
-					break outerloop;
+			}
+			
+			while (time < stopTime && !killFlag) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException ie) {}
+				if (!killFlag) {
+					if (goFlag) {
+						showStatus(Status.RUNNING);
+						time += 100;
+						bar.setValue((int)(((time - startTime) / endTime) * 100));
+					}
+					else {
+						showStatus (Status.SUSPENDED);
+					}
 				}
 			}
-		} 
-		
-		while (time < stopTime && !killFlag) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException ie) {}
+			
+			releaseWorkers();
+			
 			if (!killFlag) {
-				if (goFlag) {
-					showStatus(Status.RUNNING);
-					time += 100;
-					bar.setValue((int)(((time - startTime) / endTime) * 100));
-				}
-				else {
-					showStatus (Status.SUSPENDED);
-				}
+				bar.setValue(100);
+				showStatus(Status.DONE);
 			}
 		}
-		
-		releaseWorkers();
-		
-		if (!killFlag) {
-			bar.setValue(100);
-			showStatus(Status.DONE);
+		else {
+			setKillFlag();
+			panel.remove(workerPanel);
+			
+			JLabel insufficientWorkers = 
+					new JLabel("<html>Unable to complete job "
+					+ "<br>due to insufficient workers");
+			
+			insufficientWorkers.setHorizontalAlignment(JLabel.CENTER);
+			
+			panel.add(insufficientWorkers, c);
 		}
 		
 		synchronized(ship) {
